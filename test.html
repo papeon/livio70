@@ -92,13 +92,18 @@
       .step-header h1 { font-size:28px; overflow-wrap:break-word; }
       .step-header .step-time { font-size:25px; }
     }
+    @media(max-width:600px) {
+      .test-controls { padding:10px 12px; }
+      .test-buttons { gap:6px; }
+      .test-buttons button { padding:8px 10px; font-size:12px; min-height:44px; }
+    }
     [hidden] { display:none !important; }
   </style>
 </head>
 <body>
   <nav class="test-controls" aria-label="Controlli di prova">
     <div class="test-controls-inner"><div><small>Pagina di prova · <span id="mode">orario automatico</span></small><span id="progress" aria-live="polite"></span></div>
-    <div class="test-buttons"><button id="auto" type="button">Ora reale</button><button id="back" type="button">Indietro</button><button id="reset" type="button">Ricomincia</button><button id="next" class="next" type="button">Next →</button></div></div>
+    <div class="test-buttons"><button id="auto" type="button">Ora reale</button><button id="back" type="button" aria-label="Step precedente" title="Step precedente">&lt;&lt;&lt;</button><button id="reset" type="button">Ricomincia</button><button id="next" class="next" type="button" aria-label="Step successivo" title="Step successivo">&gt;&gt;&gt;</button></div></div>
   </nav>
   <main><div id="landing">
     <div class="eyebrow">Una cartolina per te</div>
