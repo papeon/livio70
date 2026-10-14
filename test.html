@@ -110,6 +110,13 @@
       hyphens: auto;
       overflow-wrap: break-word;
     }
+    .step-map { margin:24px 0; padding:20px; border:1px solid #bdc8c0; border-radius:4px; }
+    .step-map h2 { font-size:25px; font-weight:normal; margin:0 0 12px; }
+    .step-map p { font-size:17px; line-height:1.6; }
+    .step-map iframe { display:block; width:100%; height:300px; border:0; border-radius:3px; background:#e5e9de; }
+    .step-map a { display:block; margin-top:16px; padding:14px 16px; background:var(--ink); color:var(--paper); text-align:center; text-decoration:none; border-radius:3px; font:15px/1.5 Arial,sans-serif; }
+    .step-map a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    @media(max-width:600px) { .step-map { padding:14px; } .step-map iframe { height:250px; } }
   </style>
 </head>
 <body>
@@ -192,6 +199,11 @@
       </div>
       </header>
       <p id="step-text"></p>
+      <section id="step-map" class="step-map" hidden aria-labelledby="map-title">
+        <h2 id="map-title"></h2><p id="map-description"></p>
+        <iframe id="map-frame" title="Mappa dell’imbarcadero Ferrovia D a Venezia" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        <a id="map-link" target="_blank" rel="noopener noreferrer">Apri percorso a piedi in Google Maps ↗</a>
+      </section>
 
     </article>
     <section id="programme" class="programme" hidden aria-labelledby="programme-title">
@@ -227,13 +239,27 @@ const steps = [
     "mostraDal": "2026-10-15T09:33:00+02:00",
     "orario": "9:33–9:55",
     "titolo": "Benvenuto a Venezia!",
-    "testo": "La prossima destinazione è Murano! Raggiungiamo l’imbarcadero per prendere il vaporetto."
+    "testo": "La prossima destinazione è Murano! Raggiungiamo l’imbarcadero per prendere il vaporetto.",
+    "mappa": {
+      "origine": "Venezia Santa Lucia, Venezia",
+      "destinazione": "Ferrovia D, Venezia",
+      "titolo": "Dalla stazione all’imbarcadero",
+      "indicazioni": "Usciti dalla stazione, raggiungiamo l’imbarcadero Ferrovia D per la linea 3 verso Murano. Seguiamo le indicazioni ACTV per il pontile D.",
+      "modo": "walking"
+    }
   },
   {
     "mostraDal": "2026-10-15T09:55:00+02:00",
     "orario": "9:55–10:15",
     "titolo": "Verso Murano",
-    "testo": "Prendiamo la linea 3 da Ferrovia D a Murano Faro B."
+    "testo": "Prendiamo la linea 3 da Ferrovia D a Murano Faro B.",
+    "mappa": {
+      "origine": "Ferrovia D, Venezia",
+      "destinazione": "Murano Faro B, Venezia",
+      "modo": "transit",
+      "titolo": "In vaporetto verso Murano",
+      "indicazioni": "Linea 3 · Ferrovia D → Murano Faro B. Partenza prevista alle 9:55, arrivo alle 10:15. La mappa indica il punto di arrivo. Per il viaggio seguiamo la linea 3 diretta indicata sui tabelloni ACTV."
+    }
   },
   {
     "mostraDal": "2026-10-15T10:15:00+02:00",
@@ -303,9 +329,15 @@ const steps = [
   },
   {
     "mostraDal": "2026-10-15T19:45:00+02:00",
-    "orario": "19:45",
+    "orario": "19:45–21:30",
     "titolo": "La festa continua a tavola",
     "testo": "Cena alla Bigoleria Bellan, con torta, candeline e brindisi per i tuoi 70 anni."
+  },
+  {
+    "mostraDal": "2026-10-15T21:30:00+02:00",
+    "orario": "",
+    "titolo": "Una giornata da ricordare",
+    "testo": "Che giornata fantastica, Livio! Tra sorprese, passeggiate e risate, abbiamo festeggiato i tuoi 70 anni nel modo più bello: insieme.\n\nSperiamo di averti regalato un ricordo speciale. Tu ne hai regalato uno a tutti noi: una di quelle giornate che continueremo a raccontare, con un sorriso, ancora per tanto tempo.\n\nBuon compleanno, Livio. Ti vogliamo bene! ❤️"
   }
 ];
 let manual = false;
@@ -324,6 +356,25 @@ function syncClock() {
 }
 const el = id => document.getElementById(id);
 function render() {
+  const map = current > 0 ? steps[current - 1].mappa : null;
+  el('step-map').hidden = !map;
+  if (map) {
+    el('map-title').textContent = map.titolo;
+    el('map-description').textContent = map.indicazioni;
+    const mode = map.modo || 'walking';
+    el('map-link').hidden = mode === 'transit';
+    const embedParams = new URLSearchParams({saddr:map.origine, daddr:map.destinazione, dirflg:mode === 'transit' ? 'r' : 'w', output:'embed'});
+    const source = mode === 'transit'
+      ? 'https://www.google.com/maps?' + new URLSearchParams({q:map.destinazione, z:'14', output:'embed'})
+      : 'https://www.google.com/maps?' + embedParams;
+    el('map-frame').title = map.titolo;
+    el('map-link').textContent = mode === 'transit' ? 'Apri percorso in vaporetto in Google Maps ↗' : 'Apri percorso a piedi in Google Maps ↗';
+    if (el('map-frame').getAttribute('src') !== source) el('map-frame').src = source;
+    const params = new URLSearchParams({api:'1', origin:map.origine, destination:map.destinazione, travelmode:mode});
+    el('map-link').href = 'https://www.google.com/maps/dir/?' + params;
+  } else {
+    el('map-frame').removeAttribute('src');
+  }
   el('landing').hidden = current !== 0;
   el('step').hidden = current === 0;
   el('progress').textContent = current === 0 ? 'Messaggio iniziale' : `Tappa ${current} di ${steps.length}`;
