@@ -41,6 +41,10 @@
     .note p { font-size:18px; margin:0; }
     .signoff { color:var(--accent); font-size:26px; font-style:italic; text-align:center; margin:32px 0; }
     footer { border-top:1px solid #d8cdb8; padding-top:18px; font-size:10px; text-align:center; letter-spacing:1.6px; }
+    .postal-mark { display:block; border:0; overflow:visible; fill:none; stroke:currentColor; }
+    .postal-mark text { fill:currentColor; stroke:none; font-family:Arial,sans-serif; }
+    .postal-mark .rim { font-size:9px; letter-spacing:.6px; }
+    .postal-mark .date { font-size:14px; font-weight:bold; letter-spacing:.3px; }
     @media(max-width:600px) {
       main { width:calc(100% - 24px); margin:12px auto; padding:28px 24px 24px; }
       .eyebrow { font-size:9px; letter-spacing:1.6px; }
@@ -50,6 +54,12 @@
       p { font-size:18px; line-height:1.65; } .ticket { padding:20px 18px; gap:12px; } .ticket small { font-size:9px; letter-spacing:.6px; } .ticket p { font-size:21px; } .time { font-size:38px; padding-left:14px; }
       .note { padding:20px; } .destination { font-size:30px; } .signoff { font-size:23px; }
     }
+    .ticket.journey { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px 24px; }
+    .journey-heading { grid-column:1 / -1; padding-bottom:12px; border-bottom:1px dashed #93a497; }
+    .journey-stop p { font-size:22px; }
+    .journey-time { font-size:42px; line-height:1.2; margin-top:12px; letter-spacing:-1px; }
+    .arrival { border-left:1px dashed #93a497; padding-left:24px; }
+    @media(max-width:600px) { .ticket.journey { gap:12px; } .journey-stop p { font-size:18px; } .arrival { padding-left:12px; } .journey-time { font-size:34px; } }
     @media(max-width:350px) { .hero { grid-template-columns:1fr 85px; } h1 { font-size:28px; } main { padding-inline:18px; } }
   </style>
 </head>
@@ -67,14 +77,27 @@
           <path d="M10 126Q31 121 52 126T94 126T145 126M0 140Q22 135 43 140T85 140T135 140M20 151Q40 146 61 151T103 151" stroke="#e3eee5" stroke-width="2"/>
           <path d="M43 135Q65 145 88 133L80 142H54Z" fill="#204653"/>
         </svg><span class="label">Venezia</span></div>
-        <div class="postmark">BUON COMPLEANNO<b>18 OTT 2026</b>POSTA SPECIALE</div>
+        <svg class="postmark postal-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <path id="stamp-top" d="M 15,60 A 45,45 0 0,1 105,60"/>
+            <path id="stamp-bottom" d="M 16,60 A 44,44 0 0,0 104,60"/>
+          </defs>
+          <circle cx="60" cy="60" r="58"/>
+          <circle cx="60" cy="60" r="36" stroke-width="0.7"/>
+          <text class="rim top"><textPath href="#stamp-top" startOffset="50%" text-anchor="middle">BUON COMPLEANNO</textPath></text>
+          <text class="rim bottom" dy="8"><textPath href="#stamp-bottom" startOffset="50%" text-anchor="middle">POSTA SPECIALE</textPath></text>
+          <path d="M 17,47 H 103 M 17,73 H 103" stroke-width="1"/>
+          <rect x="8" y="48" width="104" height="24" fill="var(--paper)" stroke="none"/>
+          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">18 OTT 2026</text>
+        </svg>
       </div>
     </header>
     <p>Se sei arrivato fin qui, il francobollo ha funzionato. E tu, a 70 anni, sei ancora curioso e tecnologicamente al passo con i tempi. Ottimo segno! 😄</p>
-    <p>Domenica 18 ottobre ti basterà prendere il <strong>treno delle 8:20 a Bassano</strong> e lasciarti guidare.</p>
-    <div class="ticket" aria-label="Promemoria partenza">
-      <div><small>Domenica 18 ottobre 2026</small><p>Treno a <strong>Bassano</strong></p></div>
-      <div class="time">8:20</div>
+    <p>Domenica 18 ottobre ti basterà prendere il <strong>treno per Venezia</strong> e lasciarti guidare. Noi saremo lì ad aspettarti!</p>
+    <div class="ticket journey" aria-label="Dettagli del viaggio in treno">
+      <small class="journey-heading">Domenica 18 ottobre 2026 · Regionale 16311</small>
+      <div class="journey-stop"><small>Partenza da</small><p><strong>Bassano del Grappa</strong></p><div class="journey-time">8:20</div></div>
+      <div class="journey-stop arrival"><small>Arrivo a</small><p><strong>Venezia Santa Lucia</strong></p><div class="journey-time">9:33</div></div>
     </div>
     <section class="packing" aria-label="Cosa portare">
     <p>Scegli <strong>scarpe e abbigliamento comodi, ma non troppo sportivi</strong>: faremo qualche passeggiata, ma non andiamo in palestra!</p>
