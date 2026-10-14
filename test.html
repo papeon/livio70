@@ -10,6 +10,7 @@
   <style>
     :root { color-scheme: light; --paper:#f8f1e3; --ink:#204653; --accent:#ad4937; }
     * { box-sizing:border-box; }
+    html { scrollbar-gutter:stable; }
     body { margin:0; color:var(--ink); background:#e6dfcf; font-family:Georgia,'Times New Roman',serif; }
     main { width:min(100% - 48px,850px); margin:40px auto; background:var(--paper); padding:46px 62px 30px; box-shadow:0 14px 55px #50402b18; border:1px solid #d5ccba; position:relative; }
     .eyebrow, small, footer, .label { font:11px/1.5 Arial,sans-serif; letter-spacing:2px; text-transform:uppercase; }
@@ -71,10 +72,11 @@
     button.next { background:#f8f1e3; color:#204653; border-color:#f8f1e3; }
     button:disabled { opacity:.4; cursor:default; }
     button:focus-visible { outline:3px solid #e6b373; outline-offset:3px; }
-    .step-card { min-height:300px; padding:38px 0; }
-    .step-card h1 { margin:22px 0; }
+    .step-card { padding:0 0 12px; }
+    .step-card h1 { margin:18px 0 12px; }
     .step-time { color:var(--accent); font-size:32px; margin:25px 0; }
-    .programme { border-top:1px solid #d8cdb8; padding-top:30px; margin-top:10px; }
+    .programme { border-top:1px solid #d8cdb8; padding-top:22px; margin-top:10px; }
+    .programme .eyebrow::after { display:none; }
     .programme h2 { font-size:30px; font-weight:normal; margin:18px 0 26px; }
     .programme ol { list-style:none; margin:0; padding:0; }
     .programme li { position:relative; margin-left:15px; padding:0 0 26px 30px; border-left:1px solid #bdc8c0; }
@@ -85,10 +87,13 @@
     .programme time { font:12px Arial,sans-serif; color:var(--accent); }
     .programme li p { font-size:16px; line-height:1.6; margin:8px 0 0; }
     #step-text, .programme li p { white-space: pre-line; }
-    .step-header { display:grid; grid-template-columns:minmax(0,1fr) 170px; align-items:start; gap:24px; margin-bottom:28px; }
-    .step-header .eyebrow { flex-wrap:wrap; }
+    .step-header { display:grid; grid-template-columns:minmax(0,1fr) 128px; align-items:start; gap:24px; margin-bottom:18px; }
+    .step-header .postage { width:170px; zoom:.75; justify-self:end; margin-top:8px; }
+    .step-header .eyebrow { min-height:33px; }
+    .step-header .step-time { margin:12px 0 0; }
     @media(max-width:600px) {
-      .step-header { grid-template-columns:minmax(0,1fr) 108px; gap:16px; }
+      .step-header { grid-template-columns:minmax(0,1fr) 81px; gap:16px; }
+      .step-header .postage { width:108px; }
       .step-header h1 { font-size:28px; overflow-wrap:break-word; }
       .step-header .step-time { font-size:25px; }
     }
@@ -98,6 +103,13 @@
       .test-buttons button { padding:8px 10px; font-size:12px; min-height:44px; }
     }
     [hidden] { display:none !important; }
+    /* Allineamento dei testi narrativi, con sillabazione italiana. */
+    #landing > p:not(.destination):not(.signoff),
+    .packing p, .note p, #step-text, .programme li p {
+      text-align: justify;
+      hyphens: auto;
+      overflow-wrap: break-word;
+    }
   </style>
 </head>
 <body>
@@ -180,36 +192,122 @@
       </div>
       </header>
       <p id="step-text"></p>
-      <footer>Una sorpresa alla volta · Livio 70</footer>
+
     </article>
     <section id="programme" class="programme" hidden aria-labelledby="programme-title">
       <div class="eyebrow">La giornata prende forma</div>
-      <h2 id="programme-title">Il tuo programma</h2>
+      <h2 id="programme-title">La giornata fin qui</h2>
       <ol id="programme-list"></ol>
     </section>
+    <footer id="step-footer" hidden style="margin-top:32px">Una sorpresa alla volta · Livio 70</footer>
   </main>
 <script>
+// Sblocchi di prova per il 15 ottobre 2026, ora italiana (UTC+02:00).
+// Gli orari delle attività mostrati nella pagina restano quelli del programma.
 const steps = [
-["7:45–8:00", "Serve un parcheggio...", "Parti per tempo per trovare un parcheggio comodo. Poi controlla da che binario parte il treno."],
-["8:00–8:20", "Che la festa cominci!", "SORPRESA! 🥳\nQuesta non te l'aspettavi, eh? ed invece è così che inizia questa giornata. Ora saliamo tutti insieme nel treno e andiamo a divertirci."],
-["8:20–9:33", "Direzione Venezia", "Treno diretto per Venezia Santa Lucia. Partenza da Bassano del Grappa alle 8:20, arrivo alle 9:33. Regionale 16311."], 
-["9:33–9:55", "Benvenuto a Venezia!", "La prossima destinazione è Murano! Raggiungiamo l’imbarcadero per prendere il vaporetto."], 
-["9:55–10:15", "Verso Murano", "Prendiamo la linea 3 da Ferrovia D a Murano Faro B."], 
-["10:15–11:00", "Due passi e un caffè", "Passeggiata verso la fornace, con tempo per il bagno e un caffè."], 
-["11:00–11:45", "La sorpresa sotto vetro", "Visita alla vetreria con dimostrazione dal vivo e visita allo showroom."], 
-["11:45–12:30", "Lungo i canali", "Ci aspetta una passeggiata lungo i canali di Murano."], 
-["12:30–13:30", "È ora del picnic!", "Picnic al Parco Navagero, con giostrine."], 
-["13:30–14:02", "Di nuovo in cammino", "Riordiniamo e passeggiamo verso l’imbarcadero Murano Navagero."], 
-["14:02–14:36", "Ritorno a Venezia", "Prendiamo la linea 7 diretta a San Marco–San Zaccaria E."], 
-["14:36–17:15", "Venezia, un passo alla volta", "Passeggiata verso la stazione con una sosta per gelato e souvenir. Percorso: San Marco → Mercerie → Rialto → Strada Nova → Santa Lucia."], 
-["17:15–17:40", "Una pausa prima del ritorno", "Tempo libero vicino alla stazione: bagno, caffè o piccolo spuntino."], 
-["17:40–17:57", "Pronti a ripartire", "Controlliamo il binario e saliamo a bordo."], 
-["17:57–19:12", "Verso Bassano", "Treno diretto per Bassano. Partenza alle 17:57, arrivo alle 19:12."], 
-["19:30–19:45", "Un brindisi ci sta", "È il momento dell’aperitivo!"], 
-["19:45", "La festa continua a tavola", "Cena alla Bigoleria Bellan, con torta, candeline e brindisi per i tuoi 70 anni."]
+  {
+    "mostraDal": "2026-10-15T07:45:00+02:00",
+    "orario": "7:45–8:00",
+    "titolo": "Serve un parcheggio...",
+    "testo": "Parti per tempo per trovare un parcheggio comodo. Poi controlla da che binario parte il treno."
+  },
+  {
+    "mostraDal": "2026-10-15T08:10:00+02:00",
+    "orario": "8:00–8:20",
+    "titolo": "Che la festa cominci!",
+    "testo": "SORPRESA! 🥳\nQuesta non te l'aspettavi, eh? ed invece è così che inizia questa giornata. Ora saliamo tutti insieme nel treno e andiamo a divertirci."
+  },
+  {
+    "mostraDal": "2026-10-15T08:20:00+02:00",
+    "orario": "8:20–9:33",
+    "titolo": "Direzione Venezia",
+    "testo": "Treno diretto per Venezia Santa Lucia. Partenza da Bassano del Grappa alle 8:20, arrivo alle 9:33. Regionale 16311."
+  },
+  {
+    "mostraDal": "2026-10-15T09:33:00+02:00",
+    "orario": "9:33–9:55",
+    "titolo": "Benvenuto a Venezia!",
+    "testo": "La prossima destinazione è Murano! Raggiungiamo l’imbarcadero per prendere il vaporetto."
+  },
+  {
+    "mostraDal": "2026-10-15T09:55:00+02:00",
+    "orario": "9:55–10:15",
+    "titolo": "Verso Murano",
+    "testo": "Prendiamo la linea 3 da Ferrovia D a Murano Faro B."
+  },
+  {
+    "mostraDal": "2026-10-15T10:15:00+02:00",
+    "orario": "10:15–11:00",
+    "titolo": "Due passi e un caffè",
+    "testo": "Passeggiata verso la fornace, con tempo per il bagno e un caffè."
+  },
+  {
+    "mostraDal": "2026-10-15T11:00:00+02:00",
+    "orario": "11:00–11:45",
+    "titolo": "La sorpresa sotto vetro",
+    "testo": "Visita alla vetreria con dimostrazione dal vivo e visita allo showroom."
+  },
+  {
+    "mostraDal": "2026-10-15T11:45:00+02:00",
+    "orario": "11:45–12:30",
+    "titolo": "Lungo i canali",
+    "testo": "Ci aspetta una passeggiata lungo i canali di Murano."
+  },
+  {
+    "mostraDal": "2026-10-15T12:30:00+02:00",
+    "orario": "12:30–13:30",
+    "titolo": "È ora del picnic!",
+    "testo": "Picnic al Parco Navagero, con giostrine."
+  },
+  {
+    "mostraDal": "2026-10-15T13:30:00+02:00",
+    "orario": "13:30–14:02",
+    "titolo": "Di nuovo in cammino",
+    "testo": "Riordiniamo e passeggiamo verso l’imbarcadero Murano Navagero."
+  },
+  {
+    "mostraDal": "2026-10-15T14:02:00+02:00",
+    "orario": "14:02–14:36",
+    "titolo": "Ritorno a Venezia",
+    "testo": "Prendiamo la linea 7 diretta a San Marco–San Zaccaria E."
+  },
+  {
+    "mostraDal": "2026-10-15T14:36:00+02:00",
+    "orario": "14:36–17:15",
+    "titolo": "Venezia, un passo alla volta",
+    "testo": "Passeggiata verso la stazione con una sosta per gelato e souvenir. Percorso: San Marco → Mercerie → Rialto → Strada Nova → Santa Lucia."
+  },
+  {
+    "mostraDal": "2026-10-15T17:15:00+02:00",
+    "orario": "17:15–17:40",
+    "titolo": "Una pausa prima del ritorno",
+    "testo": "Tempo libero vicino alla stazione: bagno, caffè o piccolo spuntino."
+  },
+  {
+    "mostraDal": "2026-10-15T17:40:00+02:00",
+    "orario": "17:40–17:57",
+    "titolo": "Pronti a ripartire",
+    "testo": "Controlliamo il binario e saliamo a bordo."
+  },
+  {
+    "mostraDal": "2026-10-15T17:57:00+02:00",
+    "orario": "17:57–19:12",
+    "titolo": "Verso Bassano",
+    "testo": "Treno diretto per Bassano. Partenza alle 17:57, arrivo alle 19:12."
+  },
+  {
+    "mostraDal": "2026-10-15T19:30:00+02:00",
+    "orario": "19:30–19:45",
+    "titolo": "Un brindisi ci sta",
+    "testo": "È il momento dell’aperitivo!"
+  },
+  {
+    "mostraDal": "2026-10-15T19:45:00+02:00",
+    "orario": "19:45",
+    "titolo": "La festa continua a tavola",
+    "testo": "Cena alla Bigoleria Bellan, con torta, candeline e brindisi per i tuoi 70 anni."
+  }
 ];
-// Orari di sblocco della prova: le altre tappe restano manuali.
-steps[0].mostraDal = '2026-10-15T00:30:00+02:00';
 let manual = false;
 let current = 0;
 function scheduledStep(now = Date.now()) {
@@ -231,26 +329,26 @@ function render() {
   el('progress').textContent = current === 0 ? 'Messaggio iniziale' : `Tappa ${current} di ${steps.length}`;
   el('back').disabled = current === 0;
   el('next').disabled = current === steps.length;
-  el('programme').hidden = current === 0;
-  el('programme-list').replaceChildren(...steps.slice(0, current).map(([time, title, text], index) => {
+  el('programme').hidden = current <= 1;
+  el('step-footer').hidden = current === 0;
+  el('programme-list').replaceChildren(...steps.slice(0, Math.max(0, current - 1)).map(({orario, titolo, testo}, index) => {
     const item = document.createElement('li');
     item.dataset.step = index + 1;
-    if (index === current - 1) item.setAttribute('aria-current', 'step');
     const clock = document.createElement('time');
-    clock.textContent = time;
+    clock.textContent = orario;
     const heading = document.createElement('h3');
-    heading.textContent = title;
+    heading.textContent = titolo;
     const description = document.createElement('p');
-    description.textContent = text;
+    description.textContent = testo;
     item.append(clock, heading, description);
     return item;
   }));
   if (current > 0) {
     el('step-label').textContent = `Step ${current} · Domenica 18 ottobre 2026`;
-    const [time, title, text] = steps[current - 1];
-    el('step-title').textContent = title;
-    el('step-time').textContent = time;
-    el('step-text').textContent = text;
+    const {orario, titolo, testo} = steps[current - 1];
+    el('step-title').textContent = titolo;
+    el('step-time').textContent = orario;
+    el('step-text').textContent = testo;
   }
 }
 function go(value) {
