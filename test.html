@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f2e8">
+  <title>Prova delle tappe · Livio 70</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Buon compleanno, Livio! Una giornata di sorprese ti aspetta domenica 18 ottobre.">
+  <style>
+    :root { color-scheme: light; --paper:#f8f1e3; --ink:#204653; --accent:#ad4937; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#e6dfcf; font-family:Georgia,'Times New Roman',serif; }
+    main { width:min(100% - 48px,850px); margin:40px auto; background:var(--paper); padding:46px 62px 30px; box-shadow:0 14px 55px #50402b18; border:1px solid #d5ccba; position:relative; }
+    .eyebrow, small, footer, .label { font:11px/1.5 Arial,sans-serif; letter-spacing:2px; text-transform:uppercase; }
+    .eyebrow { display:flex; gap:18px; align-items:center; color:var(--accent); }
+    .eyebrow:after { content:''; flex:1; height:1px; background:#ad49375c; }
+    .hero { display:grid; grid-template-columns:1fr 170px; align-items:center; gap:20px; margin:24px 0 36px; }
+    .age { font-size:142px; letter-spacing:-10px; line-height:.9; color:var(--accent); font-weight:bold; }
+    .age small { letter-spacing:3px; display:inline-block; font-size:11px; margin-left:16px; writing-mode:vertical-rl; }
+    h1 { font-size:clamp(32px,5vw,48px); line-height:1.12; font-weight:normal; letter-spacing:-1px; margin:16px 0 0; }
+    h1 span { font-style:italic; }
+    .postage { position:relative; align-self:start; margin-top:8px; }
+    .stamp { padding:9px; background:#fffaf0; outline:1px dashed #9b998c; outline-offset:-4px; transform:rotate(6deg); box-shadow:2px 4px 9px #20465318; }
+    .stamp svg { display:block; width:100%; height:auto; background:#c9d9d5; }
+    .stamp .label { display:block; text-align:center; letter-spacing:3px; font-size:10px; margin:8px 0 2px; }
+    .postmark { border:2px solid var(--accent); border-radius:50%; width:105px; height:105px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--accent); font:10px/1.7 Arial,sans-serif; letter-spacing:1px; transform:rotate(-14deg); margin:-64px 0 0 -66px; position:relative; opacity:.85; }
+    .postmark b { font-size:15px; border-block:1px solid var(--accent); }
+    p { font-size:19px; line-height:1.7; margin:0 0 24px; }
+    .ticket { position:relative; display:grid; grid-template-columns:1fr auto; align-items:center; gap:20px; background:#e5e9de; border:1px solid #a6b4a7; margin:30px -8px 36px; padding:22px 26px; transform:rotate(-1deg); }
+    .ticket:before,.ticket:after { content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:var(--paper); top:calc(50% - 9px); }
+    .ticket:before { left:-10px; border-right:1px solid #a6b4a7; } .ticket:after { right:-10px; border-left:1px solid #a6b4a7; }
+    .ticket small { display:block; letter-spacing:1.3px; font-size:10px; margin-bottom:8px; }
+    .ticket p { margin:0; font-size:24px; line-height:1.3; }
+    .time { font-size:48px; letter-spacing:-2px; border-left:1px dashed #93a497; padding-left:22px; }
+    .packing { border-bottom:1px solid #d8cdb8; padding:0 0 22px; margin-bottom:26px; }
+    .packing p:last-child { margin-bottom:0; }
+    .icon { color:var(--accent); display:inline-block; width:26px; height:26px; vertical-align:-5px; margin-right:6px; }
+    .destination { text-align:center; font-size:34px; padding:12px 0; margin:26px 0; }
+    .destination span { font-size:18px; display:block; font-style:italic; margin-top:4px; }
+    .note { border:1px solid #bdc8c0; padding:24px 26px; background:#eaf0e651; }
+    .note p { font-size:18px; margin:0; }
+    .signoff { color:var(--accent); font-size:26px; font-style:italic; text-align:center; margin:32px 0; }
+    footer { border-top:1px solid #d8cdb8; padding-top:18px; font-size:10px; text-align:center; letter-spacing:1.6px; }
+    .postal-mark { display:block; border:0; overflow:visible; fill:none; stroke:currentColor; }
+    .postal-mark text { fill:currentColor; stroke:none; font-family:Arial,sans-serif; }
+    .postal-mark .rim { font-size:9px; letter-spacing:.6px; }
+    .postal-mark .date { font-size:14px; font-weight:bold; letter-spacing:.3px; }
+    @media(max-width:600px) {
+      main { width:calc(100% - 24px); margin:12px auto; padding:28px 24px 24px; }
+      .eyebrow { font-size:9px; letter-spacing:1.6px; }
+      .hero { grid-template-columns:1fr 108px; gap:12px; margin:28px 0; }
+      .age { font-size:108px; letter-spacing:-8px; } .age small { margin-left:10px; font-size:9px; }
+      h1 { font-size:32px; } .postmark { width:80px; height:80px; font-size:8px; margin-top:-48px; margin-left:-40px; } .postmark b { font-size:11px; }
+      p { font-size:18px; line-height:1.65; } .ticket { padding:20px 18px; gap:12px; } .ticket small { font-size:9px; letter-spacing:.6px; } .ticket p { font-size:21px; } .time { font-size:38px; padding-left:14px; }
+      .note { padding:20px; } .destination { font-size:30px; } .signoff { font-size:23px; }
+    }
+    .ticket.journey { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px 24px; }
+    .journey-heading { grid-column:1 / -1; padding-bottom:12px; border-bottom:1px dashed #93a497; }
+    .journey-stop p { font-size:22px; }
+    .journey-time { font-size:42px; line-height:1.2; margin-top:12px; letter-spacing:-1px; }
+    .arrival { border-left:1px dashed #93a497; padding-left:24px; }
+    @media(max-width:600px) { .ticket.journey { gap:12px; } .journey-stop p { font-size:18px; } .arrival { padding-left:12px; } .journey-time { font-size:34px; } }
+    @media(max-width:350px) { .hero { grid-template-columns:1fr 85px; } h1 { font-size:28px; } main { padding-inline:18px; } }
+  
+    .test-controls { position:sticky; top:0; z-index:10; background:#204653; color:#fffaf0; padding:14px 18px; font:14px/1.4 Arial,sans-serif; box-shadow:0 3px 12px #0002; }
+    .test-controls-inner { max-width:850px; margin:auto; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; }
+    .test-controls small { display:block; font-size:10px; letter-spacing:1px; margin-bottom:4px; }
+    .test-buttons { display:flex; gap:8px; flex-wrap:wrap; }
+    button { cursor:pointer; border:1px solid #fff7; border-radius:4px; background:transparent; color:inherit; padding:10px 14px; font:14px Arial,sans-serif; }
+    button.next { background:#f8f1e3; color:#204653; border-color:#f8f1e3; }
+    button:disabled { opacity:.4; cursor:default; }
+    button:focus-visible { outline:3px solid #e6b373; outline-offset:3px; }
+    .step-card { min-height:300px; padding:38px 0; }
+    .step-card h1 { margin:22px 0; }
+    .step-time { color:var(--accent); font-size:32px; margin:25px 0; }
+    .programme { border-top:1px solid #d8cdb8; padding-top:30px; margin-top:10px; }
+    .programme h2 { font-size:30px; font-weight:normal; margin:18px 0 26px; }
+    .programme ol { list-style:none; margin:0; padding:0; }
+    .programme li { position:relative; margin-left:15px; padding:0 0 26px 30px; border-left:1px solid #bdc8c0; }
+    .programme li:last-child { padding-bottom:0; }
+    .programme li::before { content:attr(data-step); position:absolute; left:-15px; top:0; width:28px; height:28px; background:var(--paper); border:1px solid #bdc8c0; border-radius:50%; text-align:center; font:12px/28px Arial,sans-serif; }
+    .programme li[aria-current="step"]::before { background:var(--accent); border-color:var(--accent); color:var(--paper); }
+    .programme h3 { font-size:20px; margin:5px 0; }
+    .programme time { font:12px Arial,sans-serif; color:var(--accent); }
+    .programme li p { font-size:16px; line-height:1.6; margin:8px 0 0; }
+    #step-text, .programme li p { white-space: pre-line; }
+    .step-header { display:grid; grid-template-columns:minmax(0,1fr) 170px; align-items:start; gap:24px; margin-bottom:28px; }
+    .step-header .eyebrow { flex-wrap:wrap; }
+    @media(max-width:600px) {
+      .step-header { grid-template-columns:minmax(0,1fr) 108px; gap:16px; }
+      .step-header h1 { font-size:28px; overflow-wrap:break-word; }
+      .step-header .step-time { font-size:25px; }
+    }
+    [hidden] { display:none !important; }
+  </style>
+</head>
+<body>
+  <nav class="test-controls" aria-label="Controlli di prova">
+    <div class="test-controls-inner"><div><small>Pagina di prova · <span id="mode">orario automatico</span></small><span id="progress" aria-live="polite"></span></div>
+    <div class="test-buttons"><button id="auto" type="button">Ora reale</button><button id="back" type="button">Indietro</button><button id="reset" type="button">Ricomincia</button><button id="next" class="next" type="button">Next →</button></div></div>
+  </nav>
+  <main><div id="landing">
+    <div class="eyebrow">Una cartolina per te</div>
+    <header class="hero">
+      <div><div class="age" aria-label="70 anni">70<small aria-hidden="true">anni di curiosità</small></div><h1>Buon compleanno,<br><span>Livio!</span> 🥂</h1></div>
+      <div class="postage" aria-hidden="true"><div class="stamp">
+        <svg viewBox="0 0 150 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="115" cy="30" r="15" fill="#efe1ab"/>
+          <text x="144" y="35" text-anchor="end" fill="var(--accent)" font-family="Georgia, serif" font-size="44" font-weight="bold">70</text>
+          <path d="M0 111H150V160H0Z" fill="#81a9ab"/>
+          <path d="M8 113V85H20V74H36V86H48V113M52 113V92H68V113M78 113V61H88V113M77 61L83 46L89 61" fill="#f6ebd3" stroke="#315766" stroke-width="2"/>
+          <path d="M96 113V85H106V75Q115 52 124 75V85H137V113M106 85H124M115 56V47M111 51H119" fill="#f6ebd3" stroke="#315766" stroke-width="2"/>
+          <path d="M10 126Q31 121 52 126T94 126T145 126M0 140Q22 135 43 140T85 140T135 140M20 151Q40 146 61 151T103 151" stroke="#e3eee5" stroke-width="2"/>
+          <path d="M43 135Q65 145 88 133L80 142H54Z" fill="#204653"/>
+        </svg><span class="label">Venezia</span></div>
+        <svg class="postmark postal-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <path id="stamp-top" d="M 15,60 A 45,45 0 0,1 105,60"/>
+            <path id="stamp-bottom" d="M 16,60 A 44,44 0 0,0 104,60"/>
+          </defs>
+          <circle cx="60" cy="60" r="58"/>
+          <path d="M 26.62,46.51 A 36,36 0 0,1 93.38,46.51 M 93.38,73.49 A 36,36 0 0,1 26.62,73.49" stroke-width="0.7"/>
+          <text class="rim top"><textPath href="#stamp-top" startOffset="50%" text-anchor="middle">BUON COMPLEANNO</textPath></text>
+          <text class="rim bottom" dy="8"><textPath href="#stamp-bottom" startOffset="50%" text-anchor="middle">POSTA SPECIALE</textPath></text>
+          
+          
+          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">18 OTT 2026</text>
+        </svg>
+      </div>
+    </header>
+    <p>Se sei arrivato fin qui, il francobollo ha funzionato. E tu, a 70 anni, sei ancora curioso e tecnologicamente al passo con i tempi. Ottimo segno! 😄</p>
+    <p>Domenica 18 ottobre ti basterà prendere il <strong>treno per Venezia</strong> e lasciarti guidare. Noi saremo lì ad aspettarti!</p>
+    <div class="ticket journey" aria-label="Dettagli del viaggio in treno">
+      <small class="journey-heading">Domenica 18 ottobre 2026 · Regionale 16311</small>
+      <div class="journey-stop"><small>Partenza da</small><p><strong>Bassano del Grappa</strong></p><div class="journey-time">8:20</div></div>
+      <div class="journey-stop arrival"><small>Arrivo a</small><p><strong>Venezia Santa Lucia</strong></p><div class="journey-time">9:33</div></div>
+    </div>
+    <section class="packing" aria-label="Cosa portare">
+    <p>Scegli <strong>scarpe e abbigliamento comodi, ma non troppo sportivi</strong>: faremo qualche passeggiata, ma non andiamo in palestra!</p>
+    <p>Per pranzo abbiamo organizzato un <strong>picnic</strong>: porta quello che serve a te e alla mamma. Metti in borsa anche <strong>un ombrello e un K-way</strong>, nel caso piovesse. Niente ci fermerà, nemmeno qualche goccia d’acqua!</p>
+    </section>
+    <p class="destination">Destinazione <strong>Venezia</strong>.<span>Il resto sarà una sorpresa.</span></p>
+    <div class="note"><p>Questa pagina conosce già tutto il programma, ma parlerà soltanto al momento giusto. Domenica torna a darle un’occhiata ogni tanto: ti svelerà la prossima tappa della giornata.</p></div>
+    <p class="signoff"><strong>Al resto abbiamo pensato noi.</strong></p>
+    <footer>70 anni · La curiosità continua</footer>
+</div>
+    <article id="step" class="step-card" hidden aria-live="polite" aria-atomic="true">
+      <header class="step-header">
+        <div><div class="eyebrow" id="step-label"></div>
+        <h1 id="step-title"></h1><div id="step-time" class="step-time"></div></div>
+      <div class="postage" aria-hidden="true"><div class="stamp">
+        <svg viewBox="0 0 150 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="115" cy="30" r="15" fill="#efe1ab"/>
+          <text x="144" y="35" text-anchor="end" fill="var(--accent)" font-family="Georgia, serif" font-size="44" font-weight="bold">70</text>
+          <path d="M0 111H150V160H0Z" fill="#81a9ab"/>
+          <path d="M8 113V85H20V74H36V86H48V113M52 113V92H68V113M78 113V61H88V113M77 61L83 46L89 61" fill="#f6ebd3" stroke="#315766" stroke-width="2"/>
+          <path d="M96 113V85H106V75Q115 52 124 75V85H137V113M106 85H124M115 56V47M111 51H119" fill="#f6ebd3" stroke="#315766" stroke-width="2"/>
+          <path d="M10 126Q31 121 52 126T94 126T145 126M0 140Q22 135 43 140T85 140T135 140M20 151Q40 146 61 151T103 151" stroke="#e3eee5" stroke-width="2"/>
+          <path d="M43 135Q65 145 88 133L80 142H54Z" fill="#204653"/>
+        </svg><span class="label">Venezia</span></div>
+        <svg class="postmark postal-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <path id="step-stamp-top" d="M 15,60 A 45,45 0 0,1 105,60"/>
+            <path id="step-stamp-bottom" d="M 16,60 A 44,44 0 0,0 104,60"/>
+          </defs>
+          <circle cx="60" cy="60" r="58"/>
+          <path d="M 26.62,46.51 A 36,36 0 0,1 93.38,46.51 M 93.38,73.49 A 36,36 0 0,1 26.62,73.49" stroke-width="0.7"/>
+          <text class="rim top"><textPath href="#step-stamp-top" startOffset="50%" text-anchor="middle">BUON COMPLEANNO</textPath></text>
+          <text class="rim bottom" dy="8"><textPath href="#step-stamp-bottom" startOffset="50%" text-anchor="middle">POSTA SPECIALE</textPath></text>
+          
+          
+          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">18 OTT 2026</text>
+        </svg>
+      </div>
+      </header>
+      <p id="step-text"></p>
+      <footer>Una sorpresa alla volta · Livio 70</footer>
+    </article>
+    <section id="programme" class="programme" hidden aria-labelledby="programme-title">
+      <div class="eyebrow">La giornata prende forma</div>
+      <h2 id="programme-title">Il tuo programma</h2>
+      <ol id="programme-list"></ol>
+    </section>
+  </main>
+<script>
+const steps = [
+["7:45–8:00", "Serve un parcheggio...", "Parti per tempo per trovare un parcheggio comodo. Poi controlla da che binario parte il treno."],
+["8:00–8:20", "Che la festa cominci!", "SORPRESA! 🥳\nQuesta non te l'aspettavi, eh? ed invece è così che inizia questa giornata. Ora saliamo tutti insieme nel treno e andiamo a divertirci."],
+["8:20–9:33", "Direzione Venezia", "Treno diretto per Venezia Santa Lucia. Partenza da Bassano del Grappa alle 8:20, arrivo alle 9:33. Regionale 16311."], 
+["9:33–9:55", "Benvenuto a Venezia!", "La prossima destinazione è Murano! Raggiungiamo l’imbarcadero per prendere il vaporetto."], 
+["9:55–10:15", "Verso Murano", "Prendiamo la linea 3 da Ferrovia D a Murano Faro B."], 
+["10:15–11:00", "Due passi e un caffè", "Passeggiata verso la fornace, con tempo per il bagno e un caffè."], 
+["11:00–11:45", "La sorpresa sotto vetro", "Visita alla vetreria con dimostrazione dal vivo e visita allo showroom."], 
+["11:45–12:30", "Lungo i canali", "Ci aspetta una passeggiata lungo i canali di Murano."], 
+["12:30–13:30", "È ora del picnic!", "Picnic al Parco Navagero, con giostrine."], 
+["13:30–14:02", "Di nuovo in cammino", "Riordiniamo e passeggiamo verso l’imbarcadero Murano Navagero."], 
+["14:02–14:36", "Ritorno a Venezia", "Prendiamo la linea 7 diretta a San Marco–San Zaccaria E."], 
+["14:36–17:15", "Venezia, un passo alla volta", "Passeggiata verso la stazione con una sosta per gelato e souvenir. Percorso: San Marco → Mercerie → Rialto → Strada Nova → Santa Lucia."], 
+["17:15–17:40", "Una pausa prima del ritorno", "Tempo libero vicino alla stazione: bagno, caffè o piccolo spuntino."], 
+["17:40–17:57", "Pronti a ripartire", "Controlliamo il binario e saliamo a bordo."], 
+["17:57–19:12", "Verso Bassano", "Treno diretto per Bassano. Partenza alle 17:57, arrivo alle 19:12."], 
+["19:30–19:45", "Un brindisi ci sta", "È il momento dell’aperitivo!"], 
+["19:45", "La festa continua a tavola", "Cena alla Bigoleria Bellan, con torta, candeline e brindisi per i tuoi 70 anni."]
+];
+// Orari di sblocco della prova: le altre tappe restano manuali.
+steps[0].mostraDal = '2026-10-15T00:30:00+02:00';
+let manual = false;
+let current = 0;
+function scheduledStep(now = Date.now()) {
+  let active = 0;
+  steps.forEach((step, index) => {
+    if (step.mostraDal && now >= Date.parse(step.mostraDal)) active = index + 1;
+  });
+  return active;
+}
+function syncClock() {
+  if (manual) return;
+  const active = scheduledStep();
+  if (active !== current) { current = active; render(); }
+}
+const el = id => document.getElementById(id);
+function render() {
+  el('landing').hidden = current !== 0;
+  el('step').hidden = current === 0;
+  el('progress').textContent = current === 0 ? 'Messaggio iniziale' : `Tappa ${current} di ${steps.length}`;
+  el('back').disabled = current === 0;
+  el('next').disabled = current === steps.length;
+  el('programme').hidden = current === 0;
+  el('programme-list').replaceChildren(...steps.slice(0, current).map(([time, title, text], index) => {
+    const item = document.createElement('li');
+    item.dataset.step = index + 1;
+    if (index === current - 1) item.setAttribute('aria-current', 'step');
+    const clock = document.createElement('time');
+    clock.textContent = time;
+    const heading = document.createElement('h3');
+    heading.textContent = title;
+    const description = document.createElement('p');
+    description.textContent = text;
+    item.append(clock, heading, description);
+    return item;
+  }));
+  if (current > 0) {
+    el('step-label').textContent = `Step ${current} · Domenica 18 ottobre 2026`;
+    const [time, title, text] = steps[current - 1];
+    el('step-title').textContent = title;
+    el('step-time').textContent = time;
+    el('step-text').textContent = text;
+  }
+}
+function go(value) {
+  manual = true;
+  el('mode').textContent = 'avanzamento manuale';
+  current = Math.max(0, Math.min(steps.length, value));
+  render();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+el('auto').addEventListener('click', () => {
+  manual = false;
+  el('mode').textContent = 'orario automatico';
+  syncClock();
+});
+setInterval(syncClock, 1000);
+document.addEventListener('visibilitychange', syncClock);
+window.addEventListener('focus', syncClock);
+el('next').addEventListener('click', () => go(current + 1));
+el('back').addEventListener('click', () => go(current - 1));
+el('reset').addEventListener('click', () => go(0));
+current = scheduledStep();
+render();
+</script>
+</body>
+</html>
