@@ -86,7 +86,7 @@
     .programme h3 { font-size:20px; margin:5px 0; }
     .programme time { font:12px Arial,sans-serif; color:var(--accent); }
     .programme li p { font-size:16px; line-height:1.6; margin:8px 0 0; }
-    #step-text, .programme li p { white-space: pre-line; }
+    #step-text, #map-description, .programme li p { white-space: pre-line; }
     .step-header { display:grid; grid-template-columns:minmax(0,1fr) 128px; align-items:start; gap:24px; margin-bottom:18px; }
     .step-header .postage { width:170px; zoom:.75; justify-self:end; margin-top:8px; }
     .step-header .eyebrow { min-height:33px; }
@@ -120,6 +120,13 @@
     .step-map .map-note { font:13px/1.5 Arial,sans-serif; margin:12px 0; }
     #map-frame { z-index:0; }
     #map-frame .leaflet-tooltip { font:12px Arial,sans-serif; }
+    #map-programme { width:100%; border-collapse:collapse; margin:18px 0 24px; font:14px/1.5 Arial,sans-serif; }
+    #map-programme caption { text-align:left; font-weight:bold; margin-bottom:10px; }
+    #map-programme th, #map-programme td { padding:10px 6px; text-align:left; vertical-align:top; border-bottom:1px solid #bdc8c0; }
+    #map-programme td:first-child { color:var(--accent); font-weight:bold; text-align:center; }
+    #map-programme td:nth-child(2) { white-space:nowrap; }
+    @media(max-width:600px) { #map-programme { font-size:12px; } #map-programme th, #map-programme td { padding:9px 4px; } }
+    .checkpoint-marker { border:2px solid #204653; border-radius:50%; background:#f8f1e3; color:#204653; text-align:center; font:bold 12px/22px Arial,sans-serif; box-shadow:0 1px 4px #0003; }
   </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -206,6 +213,11 @@
       <p id="step-text"></p>
       <section id="step-map" class="step-map" hidden aria-labelledby="map-title">
         <h2 id="map-title"></h2><p id="map-description"></p>
+        <table id="map-programme" hidden>
+          <caption hidden>Tappe della passeggiata</caption>
+          <thead><tr><th scope="col">Punto</th><th scope="col">Orario</th><th scope="col">Tappa</th></tr></thead>
+          <tbody id="map-programme-body"></tbody>
+        </table>
         <div id="map-frame" role="region" aria-label="Mappa del collegamento"></div>
         
         <a id="map-link" target="_blank" rel="noopener noreferrer">Apri in Maps</a>
@@ -223,34 +235,34 @@
 // Sblocchi di prova per il 15 ottobre 2026, ora italiana (UTC+02:00).
 // Gli orari delle attività mostrati nella pagina restano quelli del programma.
 const steps = [
-  {
+  { // Tappa 1 · Serve un parcheggio...
     "mostraDal": "2026-10-15T07:45:00+02:00",
     "orario": "7:45–8:00",
     "titolo": "Serve un parcheggio...",
     "testo": "Parti per tempo per trovare un parcheggio comodo. Poi controlla da che binario parte il treno."
   },
-  {
+  { // Tappa 2 · Che la festa cominci!
     "mostraDal": "2026-10-15T08:10:00+02:00",
     "orario": "8:00–8:20",
     "titolo": "Che la festa cominci!",
-    "testo": "SORPRESA! 🥳\nQuesta non te l'aspettavi, eh? ed invece è così che inizia questa giornata. Ora saliamo tutti insieme nel treno e andiamo a divertirci."
+    "testo": "SORPRESA! 🥳\nQuesta non te l’aspettavi, eh? E invece la giornata comincia proprio così! Ora saliamo tutti insieme sul Regionale 16311 per Venezia e andiamo a divertirci."
   },
-  {
+  { // Tappa 3 · Direzione Venezia
     "mostraDal": "2026-10-15T08:20:00+02:00",
     "orario": "8:20–9:33",
     "titolo": "Direzione Venezia",
-    "testo": "Treno diretto per Venezia Santa Lucia. Partenza da Bassano del Grappa alle 8:20, arrivo alle 9:33. Regionale 16311."
+    "testo": "Adesso rilassati e goditi il viaggio! Sei curioso di sapere cosa ti aspetta a Venezia? Ti diamo un indizio: devi scendere dal treno! 😄 Torna qui quando arrivi, ti sveleremo la prossima tappa."
   },
-  {
+  { // Tappa 4 · Benvenuto a Venezia!
     "mostraDal": "2026-10-15T09:33:00+02:00",
-    "orario": "9:33–9:55",
+    "orario": "9:33–10:00",
     "titolo": "Benvenuto a Venezia!",
     "testo": "La prossima destinazione è Murano! Raggiungiamo l’imbarcadero per prendere il vaporetto.",
     "mappa": {
       "origine": "Venezia Santa Lucia, Venezia",
       "destinazione": "Ferrovia D, Venezia",
       "titolo": "Dalla stazione all’imbarcadero",
-      "indicazioni": "Usciti dalla stazione, raggiungiamo l’imbarcadero Ferrovia D per la linea 3 verso Murano. Seguiamo le indicazioni ACTV per il pontile D.",
+      "indicazioni": "Usciti dalla stazione, raggiungiamo l’imbarcadero Ferrovia D per la linea 4.2 verso Murano. Seguiamo le indicazioni ACTV per il pontile D: il vaporetto parte alle 10:00.",
       "modo": "walking",
       "punti": [
         {
@@ -334,17 +346,17 @@ const steps = [
       "fonte": "https://www.openstreetmap.org/node/1522326280"
     }
   },
-  {
+  { // Tappa 5 · Verso Murano
     "mostraDal": "2026-10-15T09:55:00+02:00",
-    "orario": "9:55–10:15",
+    "orario": "10:00–10:33",
     "titolo": "Verso Murano",
-    "testo": "Prendiamo la linea 3 da Ferrovia D a Murano Faro B.",
+    "testo": "La festa prende il largo! Goditi il panorama della laguna mentre ci avviciniamo a Murano. Per ora rilassati: il riscaldamento comincia appena scendiamo! 😉",
     "mappa": {
       "origine": "Ferrovia D, Venezia",
-      "destinazione": "Murano Faro B, Venezia",
+      "destinazione": "Murano Colonna, Venezia",
       "modo": "transit",
       "titolo": "In vaporetto verso Murano",
-      "indicazioni": "Linea 3 · Ferrovia D → Murano Colonna → Murano Faro B. Partenza prevista alle 9:55, arrivo alle 10:15.",
+      "indicazioni": "Linea 4.2 · Ferrovia D → Murano Colonna. Partenza alle 10:00, arrivo alle 10:33.",
       "punti": [
         {
           "nome": "Ferrovia \"D\"",
@@ -354,14 +366,14 @@ const steps = [
           ]
         },
         {
-          "nome": "Murano Faro \"B\"",
+          "nome": "Murano Colonna",
           "pos": [
-            45.452557,
-            12.354241
+            45.451134,
+            12.348564
           ]
         }
       ],
-      "nota": "Tracciato della linea 3 dai dati ufficiali ACTV (GTFS): Ferrovia D → Murano Colonna A → Murano Faro B.",
+      "nota": "Tracciato della linea 4.2 dai dati ufficiali ACTV (GTFS), da Ferrovia D a Murano Colonna.",
       "percorso": [
         [
           45.440216,
@@ -536,8 +548,8 @@ const steps = [
           12.32458
         ],
         [
-          45.444252,
-          12.32439
+          45.444294,
+          12.32445
         ],
         [
           45.444344,
@@ -584,8 +596,8 @@ const steps = [
           12.321271
         ],
         [
-          45.445362,
-          12.321171
+          45.445278,
+          12.321106
         ],
         [
           45.445377,
@@ -716,48 +728,176 @@ const steps = [
           12.328164
         ],
         [
-          45.449677,
-          12.328273
+          45.449619,
+          12.328378
         ],
         [
-          45.449539,
-          12.328925
+          45.449524,
+          12.328598
         ],
         [
-          45.449329,
-          12.32978
+          45.449295,
+          12.32889
         ],
         [
-          45.449276,
-          12.330003
+          45.44915,
+          12.329048
         ],
         [
-          45.448967,
-          12.331545
+          45.448982,
+          12.329178
         ],
         [
-          45.448669,
-          12.336629
+          45.448818,
+          12.329454
         ],
         [
-          45.448723,
-          12.337768
+          45.448704,
+          12.329509
         ],
         [
-          45.448772,
-          12.338776
+          45.448776,
+          12.329605
         ],
         [
-          45.449123,
-          12.342216
+          45.448788,
+          12.330073
         ],
         [
-          45.4496,
-          12.344652
+          45.448826,
+          12.33029
         ],
         [
-          45.449677,
-          12.345033
+          45.448856,
+          12.330611
+        ],
+        [
+          45.44886,
+          12.330641
+        ],
+        [
+          45.448811,
+          12.331051
+        ],
+        [
+          45.448685,
+          12.331333
+        ],
+        [
+          45.448441,
+          12.331722
+        ],
+        [
+          45.448189,
+          12.332061
+        ],
+        [
+          45.447979,
+          12.332403
+        ],
+        [
+          45.447819,
+          12.332747
+        ],
+        [
+          45.447674,
+          12.332901
+        ],
+        [
+          45.447678,
+          12.333185
+        ],
+        [
+          45.447578,
+          12.333678
+        ],
+        [
+          45.447483,
+          12.334161
+        ],
+        [
+          45.44738,
+          12.334713
+        ],
+        [
+          45.447323,
+          12.334999
+        ],
+        [
+          45.447273,
+          12.335153
+        ],
+        [
+          45.447163,
+          12.335374
+        ],
+        [
+          45.446693,
+          12.336139
+        ],
+        [
+          45.445896,
+          12.337251
+        ],
+        [
+          45.444939,
+          12.338424
+        ],
+        [
+          45.444889,
+          12.338479
+        ],
+        [
+          45.444183,
+          12.339345
+        ],
+        [
+          45.444038,
+          12.339571
+        ],
+        [
+          45.443657,
+          12.340233
+        ],
+        [
+          45.44363,
+          12.340273
+        ],
+        [
+          45.443138,
+          12.340671
+        ],
+        [
+          45.44363,
+          12.340273
+        ],
+        [
+          45.444656,
+          12.341207
+        ],
+        [
+          45.446568,
+          12.343081
+        ],
+        [
+          45.448334,
+          12.345193
+        ],
+        [
+          45.448627,
+          12.345581
+        ],
+        [
+          45.448673,
+          12.345977
+        ],
+        [
+          45.449139,
+          12.346162
+        ],
+        [
+          45.449245,
+          12.346272
         ],
         [
           45.450138,
@@ -792,94 +932,30 @@ const steps = [
           12.348468
         ],
         [
-          45.450996,
-          12.348517
-        ],
-        [
-          45.450996,
-          12.348629
-        ],
-        [
-          45.450989,
-          12.348866
-        ],
-        [
-          45.450989,
-          12.348897
-        ],
-        [
-          45.450996,
-          12.349059
-        ],
-        [
-          45.451107,
-          12.349192
-        ],
-        [
-          45.45097,
-          12.349358
-        ],
-        [
-          45.450932,
-          12.349593
-        ],
-        [
-          45.450909,
-          12.350022
-        ],
-        [
-          45.450882,
-          12.350683
-        ],
-        [
-          45.451054,
-          12.351398
-        ],
-        [
-          45.451271,
-          12.352068
-        ],
-        [
-          45.451622,
-          12.352733
-        ],
-        [
-          45.451851,
-          12.353116
-        ],
-        [
-          45.45211,
-          12.353545
-        ],
-        [
-          45.452374,
-          12.354034
-        ],
-        [
-          45.452557,
-          12.354241
+          45.451134,
+          12.348564
         ]
       ],
       "fonte": "https://actv.avmspa.it/sites/default/files/attachments/opendata/navigazione/actv__nav.zip"
     }
   },
-  {
+  { // Tappa 6 · Gambe in spalla!
     "mostraDal": "2026-10-15T10:15:00+02:00",
-    "orario": "10:15–11:00",
-    "titolo": "Due passi e un caffè",
-    "testo": "Passeggiata verso la fornace, con tempo per il bagno e un caffè.",
+    "orario": "10:33–11:00",
+    "titolo": "Gambe in spalla!",
+    "testo": "Eccoci a Murano! Ora gambe in spalla: in fornace ci aspettano alle 11:00. Il riscaldamento per spegnere le 70 candeline comincia da qui! 😄",
     "mappa": {
-      "origine": "Murano Faro B, Venezia",
+      "origine": "Murano Colonna, Venezia",
       "destinazione": "Original Murano Glass, Fondamenta San Giovanni dei Battuti 4b, Murano",
       "modo": "walking",
       "titolo": "Verso Original Murano Glass",
-      "indicazioni": "Raggiungiamo Original Murano Glass lungo Fondamenta Piave e Fondamenta San Giovanni dei Battuti: circa 300 metri, 4 minuti a piedi. Ci prendiamo il tempo per una pausa bagno e un caffè.",
+      "indicazioni": "Seguiamo il percorso da Murano Colonna a Original Murano Glass, in Fondamenta San Giovanni dei Battuti 4b: circa 870 metri, 12 minuti a piedi.",
       "punti": [
         {
-          "nome": "Murano Faro B",
+          "nome": "Murano Colonna",
           "pos": [
-            45.452557,
-            12.354241
+            45.451134,
+            12.348564
           ]
         },
         {
@@ -892,83 +968,219 @@ const steps = [
       ],
       "percorso": [
         [
-          45.452557,
-          12.354241
+          45.451124,
+          12.348562
         ],
         [
-          45.45262,
-          12.3542
+          45.451116,
+          12.348655
         ],
         [
-          45.4527479,
-          12.354199
+          45.45115,
+          12.348661
         ],
         [
-          45.4528324,
-          12.3542166
+          45.451152,
+          12.34863
         ],
         [
-          45.4528231,
-          12.3543164
+          45.451227,
+          12.348625
         ],
         [
-          45.4528768,
-          12.3545632
+          45.451258,
+          12.348633
         ],
         [
-          45.4528702,
-          12.3546356
+          45.451245,
+          12.348883
         ],
         [
-          45.4530301,
-          12.3553048
+          45.451246,
+          12.348974
         ],
         [
-          45.4531092,
-          12.3553381
+          45.451249,
+          12.349146
         ],
         [
-          45.4531392,
-          12.3553505
+          45.451273,
+          12.349233
         ],
         [
-          45.4534139,
-          12.3554389
+          45.451422,
+          12.349529
         ],
         [
-          45.4537381,
-          12.3554578
+          45.451898,
+          12.35003
         ],
         [
-          45.4543024,
-          12.3557073
+          45.452304,
+          12.350457
+        ],
+        [
+          45.452319,
+          12.350472
+        ],
+        [
+          45.452297,
+          12.350518
+        ],
+        [
+          45.452273,
+          12.350571
+        ],
+        [
+          45.452244,
+          12.350634
+        ],
+        [
+          45.452259,
+          12.35065
+        ],
+        [
+          45.452646,
+          12.35105
+        ],
+        [
+          45.452911,
+          12.351322
+        ],
+        [
+          45.452956,
+          12.351369
+        ],
+        [
+          45.453054,
+          12.35147
+        ],
+        [
+          45.453331,
+          12.351758
+        ],
+        [
+          45.453478,
+          12.35191
+        ],
+        [
+          45.453495,
+          12.351928
+        ],
+        [
+          45.453512,
+          12.351945
+        ],
+        [
+          45.453589,
+          12.352018
+        ],
+        [
+          45.453625,
+          12.352062
+        ],
+        [
+          45.453618,
+          12.352075
+        ],
+        [
+          45.453556,
+          12.352201
+        ],
+        [
+          45.453524,
+          12.35236
+        ],
+        [
+          45.453575,
+          12.352415
+        ],
+        [
+          45.453727,
+          12.35256
+        ],
+        [
+          45.453567,
+          12.352843
+        ],
+        [
+          45.453304,
+          12.353326
+        ],
+        [
+          45.453166,
+          12.353579
+        ],
+        [
+          45.453185,
+          12.353767
+        ],
+        [
+          45.453184,
+          12.354322
+        ],
+        [
+          45.453146,
+          12.354323
+        ],
+        [
+          45.453123,
+          12.355127
+        ],
+        [
+          45.453145,
+          12.35513
+        ],
+        [
+          45.453143,
+          12.355188
+        ],
+        [
+          45.453141,
+          12.355244
+        ],
+        [
+          45.453139,
+          12.355351
+        ],
+        [
+          45.453414,
+          12.355439
+        ],
+        [
+          45.453738,
+          12.355458
+        ],
+        [
+          45.454302,
+          12.355707
         ],
         [
           45.454346,
-          12.355714
+          12.355713
         ]
       ],
       "percorsoIndicativo": false,
-      "fonte": "https://www.originalmuranoglass.com/contact-us/"
+      "fonte": "https://routing.openstreetmap.de/about.html"
     }
   },
-  {
+  { // Tappa 7 · La sorpresa sotto vetro
     "mostraDal": "2026-10-15T11:00:00+02:00",
     "orario": "11:00–11:45",
     "titolo": "La sorpresa sotto vetro",
-    "testo": "Visita alla vetreria con dimostrazione dal vivo e visita allo showroom."
+    "testo": "Ti avevamo parlato di riscaldamento… ma non ti avevamo detto fino a che temperatura! Benvenuto in fornace, Livio: ora ci fermiamo a scoprire cosa sanno fare i maestri vetrai con il fuoco e il vetro. 😉"
   },
-  {
+  { // Tappa 8 · Lungo i canali
     "mostraDal": "2026-10-15T11:45:00+02:00",
-    "orario": "11:45–12:30",
+    "orario": "11:45–12:45",
     "titolo": "Lungo i canali",
-    "testo": "Ci aspetta una passeggiata lungo i canali di Murano.",
+    "testo": "Riprendiamo il cammino, stavolta con un po’ più di calma. Direzione parco: tra un canale e un ponticello, ci avviciniamo al nostro picnic! 😉",
     "mappa": {
       "origine": "Original Murano Glass, Fondamenta San Giovanni dei Battuti 4b, Murano",
       "destinazione": "Parco Navagero, Murano",
       "modo": "walking",
       "titolo": "Una passeggiata verso il picnic",
-      "indicazioni": "Da Original Murano Glass al Parco Navagero, passando per i canali di Murano. Il percorso proposto è di circa 1,1 km.",
+      "indicazioni": "Dal laboratorio al pranzo all’aperto: seguiamo i canali di Murano fino al Parco Navagero. Circa 1,1 km a piedi.",
       "punti": [
         {
           "nome": "Original Murano Glass",
@@ -1314,39 +1526,23 @@ const steps = [
       "fonte": "https://routing.openstreetmap.de/about.html"
     }
   },
-  {
+  { // Tappa 9 · È ora del picnic!
     "mostraDal": "2026-10-15T12:30:00+02:00",
-    "orario": "12:30–13:30",
+    "orario": "12:45–13:45",
     "titolo": "È ora del picnic!",
-    "testo": "Picnic al Parco Navagero, con giostrine.",
-    "mappa": {
-      "destinazione": "Parco Navagero, Murano",
-      "modo": "place",
-      "titolo": "Il nostro picnic",
-      "indicazioni": "Il punto di ritrovo per il pranzo è il Parco Navagero.",
-      "punti": [
-        {
-          "nome": "Parco Navagero",
-          "pos": [
-            45.45671,
-            12.35827
-          ]
-        }
-      ],
-      "fonte": "https://www.openstreetmap.org/way/356986429"
-    }
+    "testo": "Finalmente scopriamo anche cosa c’è negli zaini! Tra tutte le sorprese di oggi, almeno il tuo panino dovresti riconoscerlo. Buon appetito, Livio! 😋"
   },
-  {
+  { // Tappa 10 · Di nuovo in cammino
     "mostraDal": "2026-10-15T13:30:00+02:00",
-    "orario": "13:30–14:02",
+    "orario": "13:45–14:02",
     "titolo": "Di nuovo in cammino",
-    "testo": "Riordiniamo e passeggiamo verso l’imbarcadero Murano Navagero.",
+    "testo": "Salutiamo il parco: Venezia ci aspetta per il prossimo capitolo della festa!",
     "mappa": {
       "origine": "Parco Navagero, Murano",
       "destinazione": "Imbarcadero Murano Navagero, Venezia",
       "modo": "walking",
       "titolo": "Verso l’imbarcadero Navagero",
-      "indicazioni": "Dal Parco Navagero raggiungiamo l’imbarcadero Murano Navagero: circa 350 metri a piedi.",
+      "indicazioni": "Raggiungiamo l’imbarcadero Murano Navagero: circa 350 metri, 5 minuti a piedi.",
       "punti": [
         {
           "nome": "Parco Navagero",
@@ -1472,17 +1668,17 @@ const steps = [
       "fonte": "https://routing.openstreetmap.de/about.html"
     }
   },
-  {
+  { // Tappa 11 · Ritorno a Venezia
     "mostraDal": "2026-10-15T14:02:00+02:00",
     "orario": "14:02–14:36",
     "titolo": "Ritorno a Venezia",
-    "testo": "Prendiamo la linea 7 diretta a San Marco–San Zaccaria E.",
+    "testo": "Salutiamo Murano dall’acqua e ci godiamo un altro pezzetto di laguna. La festa continua verso San Marco: Venezia ha ancora tanto da mostrarci!",
     "mappa": {
       "origine": "Murano Navagero, Venezia",
       "destinazione": "San Marco San Zaccaria E, Venezia",
       "modo": "transit",
       "titolo": "In vaporetto verso San Marco",
-      "indicazioni": "Linea 7 · Murano Navagero → San Marco–San Zaccaria E. Partenza alle 14:02, arrivo alle 14:36.",
+      "indicazioni": "Scendiamo a San Marco–San Zaccaria E. Da lì comincia il nostro pomeriggio a Venezia.",
       "punti": [
         {
           "nome": "Murano Navagero",
@@ -2052,30 +2248,65 @@ const steps = [
       "fonte": "https://actv.avmspa.it/sites/default/files/attachments/opendata/navigazione/actv__nav.zip"
     }
   },
-  {
+  { // Tappa 12 · Venezia, un passo alla volta
     "mostraDal": "2026-10-15T14:36:00+02:00",
     "orario": "14:36–17:15",
     "titolo": "Venezia, un passo alla volta",
-    "testo": "Passeggiata verso la stazione con una sosta per gelato e souvenir. Percorso: San Marco → Mercerie → Rialto → Strada Nova → Santa Lucia.",
+    "testo": "Eccoci nel cuore di Venezia! San Marco, la Fenice, Rialto… ti abbiamo organizzato un compleanno con i fiocchi, ma a quanto pare anche con parecchi ponti! 😉",
     "mappa": {
       "origine": "San Marco San Zaccaria E, Venezia",
       "destinazione": "Venezia Santa Lucia",
       "modo": "walking",
       "titolo": "Da San Marco a Santa Lucia",
-      "indicazioni": "Una passeggiata passando per Piazza San Marco, Mercerie, Rialto e Strada Nova, con tempo per gelato e souvenir. Circa 3,0 km.",
+      "indicazioni": "Percorso consigliato · circa 3,9 km a piedi. Basta essere in stazione entro le 17:15.",
       "punti": [
         {
-          "nome": "S. Marco-San Zaccaria \"E\"",
+          "nome": "1 · 14:45 · Piazza San Marco",
           "pos": [
-            45.433384,
-            12.342215
+            45.43433,
+            12.338393
           ]
         },
         {
-          "nome": "Venezia Santa Lucia",
+          "nome": "2 · ~15:05 · Partenza da San Marco verso La Fenice",
           "pos": [
-            45.44108,
-            12.32103
+            45.433966,
+            12.336638
+          ]
+        },
+        {
+          "nome": "3 · ~15:15 · Teatro La Fenice",
+          "pos": [
+            45.433708,
+            12.333929
+          ]
+        },
+        {
+          "nome": "4 · ~15:40 · Ponte di Rialto",
+          "pos": [
+            45.43801,
+            12.335882
+          ]
+        },
+        {
+          "nome": "5 · ~16:00 · Campo Santi Apostoli",
+          "pos": [
+            45.440328,
+            12.336671
+          ]
+        },
+        {
+          "nome": "6 · ~16:15 · Ponte Chiodo",
+          "pos": [
+            45.442841,
+            12.334722
+          ]
+        },
+        {
+          "nome": "7 · 17:15 · Venezia Santa Lucia",
+          "pos": [
+            45.441067,
+            12.321016
           ]
         }
       ],
@@ -2241,6 +2472,10 @@ const steps = [
           12.33881
         ],
         [
+          45.43433,
+          12.338393
+        ],
+        [
           45.434209,
           12.338097
         ],
@@ -2265,188 +2500,268 @@ const steps = [
           12.337691
         ],
         [
-          45.434204,
-          12.337676
+          45.4341,
+          12.337492
         ],
         [
-          45.434248,
-          12.33764
+          45.434015,
+          12.337294
         ],
         [
-          45.434257,
-          12.33766
+          45.434073,
+          12.337242
         ],
         [
-          45.434266,
-          12.33768
+          45.434116,
+          12.337202
         ],
         [
-          45.43428,
-          12.337668
+          45.434176,
+          12.33715
         ],
         [
-          45.434266,
-          12.33768
+          45.434183,
+          12.337135
         ],
         [
-          45.434257,
-          12.33766
+          45.434133,
+          12.337037
         ],
         [
-          45.434248,
-          12.33764
+          45.434074,
+          12.336918
         ],
         [
-          45.434204,
-          12.337676
+          45.434053,
+          12.33687
         ],
         [
-          45.434185,
-          12.337691
+          45.433966,
+          12.336638
         ],
         [
-          45.43427,
-          12.337889
+          45.433952,
+          12.336598
+        ],
+        [
+          45.433889,
+          12.33641
+        ],
+        [
+          45.433973,
+          12.336358
+        ],
+        [
+          45.434058,
+          12.336305
+        ],
+        [
+          45.43408,
+          12.336291
+        ],
+        [
+          45.434165,
+          12.336239
+        ],
+        [
+          45.434175,
+          12.336232
+        ],
+        [
+          45.434216,
+          12.336201
+        ],
+        [
+          45.43416,
+          12.335999
+        ],
+        [
+          45.434097,
+          12.335771
+        ],
+        [
+          45.434082,
+          12.335661
+        ],
+        [
+          45.434084,
+          12.335583
+        ],
+        [
+          45.434084,
+          12.335561
+        ],
+        [
+          45.434069,
+          12.33551
+        ],
+        [
+          45.434018,
+          12.335336
+        ],
+        [
+          45.433926,
+          12.334999
+        ],
+        [
+          45.433899,
+          12.334908
+        ],
+        [
+          45.433875,
+          12.334824
+        ],
+        [
+          45.433843,
+          12.334616
+        ],
+        [
+          45.433798,
+          12.33432
+        ],
+        [
+          45.433788,
+          12.334279
+        ],
+        [
+          45.433779,
+          12.334243
+        ],
+        [
+          45.433708,
+          12.333929
+        ],
+        [
+          45.433909,
+          12.333919
+        ],
+        [
+          45.433966,
+          12.334023
+        ],
+        [
+          45.434038,
+          12.334212
+        ],
+        [
+          45.434042,
+          12.334224
+        ],
+        [
+          45.434186,
+          12.334732
+        ],
+        [
+          45.434192,
+          12.334752
+        ],
+        [
+          45.43421,
+          12.334816
+        ],
+        [
+          45.434215,
+          12.334835
         ],
         [
           45.434315,
-          12.337996
+          12.335211
         ],
         [
-          45.434427,
-          12.337884
+          45.434379,
+          12.335531
         ],
         [
-          45.434456,
-          12.337856
+          45.434614,
+          12.335409
         ],
         [
-          45.434486,
-          12.337829
+          45.434645,
+          12.335392
         ],
         [
-          45.43451,
-          12.337807
+          45.434682,
+          12.335341
         ],
         [
-          45.434524,
-          12.337794
+          45.434705,
+          12.335308
         ],
         [
-          45.43453,
-          12.337789
+          45.434723,
+          12.335307
         ],
         [
-          45.434538,
-          12.337782
+          45.435031,
+          12.335299
         ],
         [
-          45.434553,
-          12.337768
+          45.435177,
+          12.335317
         ],
         [
-          45.434713,
-          12.337635
+          45.435272,
+          12.335322
         ],
         [
-          45.434651,
-          12.337527
+          45.435277,
+          12.335322
         ],
         [
-          45.434843,
-          12.337268
+          45.435643,
+          12.33529
         ],
         [
-          45.435016,
-          12.33706
+          45.435735,
+          12.335265
         ],
         [
-          45.435173,
-          12.336919
+          45.435738,
+          12.335282
         ],
         [
-          45.435181,
-          12.336884
+          45.435763,
+          12.335276
         ],
         [
-          45.435188,
-          12.336852
+          45.435806,
+          12.335446
         ],
         [
-          45.435251,
-          12.336799
+          45.435801,
+          12.335452
         ],
         [
-          45.435258,
-          12.336785
+          45.435812,
+          12.335472
         ],
         [
-          45.435311,
-          12.336733
+          45.435848,
+          12.335444
         ],
         [
-          45.435385,
-          12.336664
+          45.435864,
+          12.335461
         ],
         [
-          45.435436,
-          12.33662
+          45.43587,
+          12.335448
         ],
         [
-          45.435451,
-          12.336603
+          45.435864,
+          12.335437
         ],
         [
-          45.435486,
-          12.336539
+          45.435959,
+          12.335372
         ],
         [
-          45.435504,
-          12.33651
+          45.435961,
+          12.335376
         ],
         [
-          45.435553,
-          12.336439
-        ],
-        [
-          45.435684,
-          12.336239
-        ],
-        [
-          45.435707,
-          12.336294
-        ],
-        [
-          45.435684,
-          12.336239
-        ],
-        [
-          45.435697,
-          12.336216
-        ],
-        [
-          45.435772,
-          12.336118
-        ],
-        [
-          45.435808,
-          12.336075
-        ],
-        [
-          45.435852,
-          12.336029
-        ],
-        [
-          45.436019,
-          12.335859
-        ],
-        [
-          45.436039,
-          12.335845
-        ],
-        [
-          45.43611,
-          12.335771
+          45.435968,
+          12.335366
         ],
         [
           45.436159,
@@ -2569,12 +2884,24 @@ const steps = [
           12.336098
         ],
         [
-          45.43791,
-          12.336175
+          45.437963,
+          12.33589
         ],
         [
-          45.438032,
-          12.335969
+          45.437985,
+          12.335853
+        ],
+        [
+          45.437991,
+          12.335859
+        ],
+        [
+          45.43801,
+          12.335882
+        ],
+        [
+          45.438034,
+          12.33591
         ],
         [
           45.438053,
@@ -2585,10 +2912,6 @@ const steps = [
           12.335951
         ],
         [
-          45.438105,
-          12.335991
-        ],
-        [
           45.438114,
           12.336002
         ],
@@ -2597,172 +2920,280 @@ const steps = [
           12.336012
         ],
         [
-          45.438145,
-          12.335974
+          45.438101,
+          12.336049
         ],
         [
-          45.438265,
-          12.335766
+          45.43798,
+          12.336258
         ],
         [
-          45.438233,
-          12.335728
+          45.43799,
+          12.33627
         ],
         [
-          45.438277,
-          12.335658
+          45.438019,
+          12.336307
         ],
         [
-          45.438291,
-          12.335636
+          45.438052,
+          12.336348
         ],
         [
-          45.438321,
-          12.335588
+          45.43808,
+          12.336383
         ],
         [
-          45.438347,
-          12.335547
+          45.438039,
+          12.336629
         ],
         [
-          45.438363,
-          12.335559
+          45.438,
+          12.336833
         ],
         [
-          45.438533,
-          12.335689
+          45.437993,
+          12.336864
         ],
         [
-          45.438572,
-          12.335685
+          45.437989,
+          12.336885
         ],
         [
-          45.438661,
-          12.335791
+          45.437979,
+          12.336911
         ],
         [
-          45.438688,
-          12.335764
+          45.438005,
+          12.336924
         ],
         [
-          45.43881,
-          12.335574
+          45.43815,
+          12.336995
         ],
         [
-          45.43893,
-          12.335388
+          45.438394,
+          12.33708
         ],
         [
-          45.438939,
-          12.335375
+          45.438416,
+          12.337089
         ],
         [
-          45.438959,
-          12.335343
+          45.438427,
+          12.337091
         ],
         [
-          45.438994,
-          12.335391
+          45.438433,
+          12.337083
         ],
         [
-          45.439011,
-          12.335366
+          45.438479,
+          12.337016
         ],
         [
-          45.439028,
-          12.335343
+          45.43851,
+          12.337025
         ],
         [
-          45.439055,
-          12.335381
+          45.438782,
+          12.337083
         ],
         [
-          45.439293,
-          12.335071
+          45.438882,
+          12.337099
         ],
         [
-          45.439356,
-          12.334989
+          45.438971,
+          12.337114
         ],
         [
-          45.439596,
-          12.33463
+          45.439048,
+          12.337128
         ],
         [
-          45.439668,
-          12.334715
+          45.439071,
+          12.337116
         ],
         [
-          45.439674,
-          12.334723
+          45.43925,
+          12.337078
         ],
         [
-          45.439731,
-          12.334624
+          45.439254,
+          12.337077
         ],
         [
-          45.439935,
-          12.334257
+          45.439355,
+          12.337057
         ],
         [
-          45.439976,
-          12.334183
+          45.439405,
+          12.337049
         ],
         [
-          45.440011,
-          12.334219
+          45.439468,
+          12.337064
+        ],
+        [
+          45.43948,
+          12.337068
+        ],
+        [
+          45.439491,
+          12.337071
+        ],
+        [
+          45.439517,
+          12.337079
+        ],
+        [
+          45.439566,
+          12.337059
+        ],
+        [
+          45.439611,
+          12.337078
+        ],
+        [
+          45.439619,
+          12.33705
+        ],
+        [
+          45.439624,
+          12.337052
+        ],
+        [
+          45.439626,
+          12.337036
+        ],
+        [
+          45.439643,
+          12.337034
+        ],
+        [
+          45.439675,
+          12.33703
+        ],
+        [
+          45.439691,
+          12.337028
+        ],
+        [
+          45.439702,
+          12.337025
+        ],
+        [
+          45.439695,
+          12.336895
+        ],
+        [
+          45.4397,
+          12.336818
+        ],
+        [
+          45.439724,
+          12.336794
+        ],
+        [
+          45.439804,
+          12.336723
+        ],
+        [
+          45.439818,
+          12.336712
+        ],
+        [
+          45.43988,
+          12.336698
+        ],
+        [
+          45.439981,
+          12.33668
         ],
         [
           45.43998,
-          12.334315
+          12.336663
         ],
         [
-          45.44039,
-          12.334503
+          45.439986,
+          12.336522
         ],
         [
-          45.440439,
-          12.33454
+          45.43998,
+          12.336443
         ],
         [
-          45.44046,
-          12.334559
+          45.439998,
+          12.336446
         ],
         [
-          45.440483,
-          12.334512
+          45.440005,
+          12.336449
         ],
         [
-          45.440462,
-          12.334493
+          45.440041,
+          12.336464
         ],
         [
-          45.440386,
-          12.334417
+          45.440065,
+          12.336473
         ],
         [
-          45.440386,
-          12.334417
+          45.440087,
+          12.336483
         ],
         [
-          45.440462,
-          12.334493
+          45.440096,
+          12.336487
         ],
         [
-          45.440483,
-          12.334512
+          45.440113,
+          12.336493
         ],
         [
-          45.44046,
-          12.334559
+          45.440246,
+          12.336505
         ],
         [
-          45.440443,
-          12.334594
+          45.440328,
+          12.336671
         ],
         [
-          45.440635,
-          12.334777
+          45.440246,
+          12.336505
+        ],
+        [
+          45.440291,
+          12.336271
+        ],
+        [
+          45.440307,
+          12.336194
+        ],
+        [
+          45.440459,
+          12.335814
+        ],
+        [
+          45.440494,
+          12.335737
+        ],
+        [
+          45.440588,
+          12.33554
+        ],
+        [
+          45.440729,
+          12.335224
+        ],
+        [
+          45.440828,
+          12.335009
+        ],
+        [
+          45.440831,
+          12.335004
         ],
         [
           45.440861,
@@ -2785,148 +3216,220 @@ const steps = [
           12.334351
         ],
         [
-          45.441334,
-          12.333923
+          45.441343,
+          12.334544
         ],
         [
-          45.441354,
-          12.333874
+          45.441398,
+          12.33443
         ],
         [
-          45.441373,
-          12.333828
+          45.441535,
+          12.334212
         ],
         [
-          45.441427,
-          12.333696
+          45.441567,
+          12.334163
         ],
         [
-          45.441496,
-          12.33354
+          45.441588,
+          12.334134
         ],
         [
-          45.441505,
-          12.33352
+          45.441641,
+          12.334059
         ],
         [
-          45.441513,
-          12.333502
+          45.441669,
+          12.334014
         ],
         [
-          45.441522,
-          12.333483
+          45.441728,
+          12.333932
         ],
         [
-          45.441544,
-          12.333434
+          45.441825,
+          12.33376
         ],
         [
-          45.441553,
-          12.333414
+          45.441836,
+          12.333734
         ],
         [
-          45.441562,
-          12.333394
+          45.441854,
+          12.333691
         ],
         [
-          45.441575,
-          12.333365
+          45.441865,
+          12.333665
         ],
         [
-          45.441685,
-          12.333221
+          45.441879,
+          12.333678
         ],
         [
-          45.441751,
-          12.333135
+          45.44194,
+          12.333741
         ],
         [
-          45.441818,
-          12.333067
+          45.44205,
+          12.333827
         ],
         [
-          45.441935,
-          12.332948
+          45.442323,
+          12.334073
         ],
         [
-          45.441993,
-          12.332889
+          45.442602,
+          12.334356
         ],
         [
-          45.442002,
-          12.33288
+          45.442682,
+          12.334433
         ],
         [
-          45.442022,
-          12.332863
+          45.442761,
+          12.334544
         ],
         [
-          45.442032,
-          12.332855
+          45.442772,
+          12.334556
         ],
         [
-          45.442046,
-          12.332842
+          45.442782,
+          12.334568
         ],
         [
-          45.442057,
-          12.332834
+          45.442859,
+          12.334663
         ],
         [
-          45.442073,
-          12.33282
+          45.442867,
+          12.334672
         ],
         [
-          45.442118,
-          12.332782
+          45.44285,
+          12.334705
         ],
         [
-          45.442135,
-          12.332768
+          45.442841,
+          12.334722
         ],
         [
-          45.442145,
-          12.332759
+          45.44285,
+          12.334705
         ],
         [
-          45.442159,
-          12.332747
+          45.442867,
+          12.334672
         ],
         [
-          45.442169,
-          12.332739
+          45.442974,
+          12.334525
         ],
         [
-          45.442188,
-          12.332722
+          45.443004,
+          12.334488
         ],
         [
-          45.442213,
-          12.332699
+          45.443057,
+          12.334423
         ],
         [
-          45.442425,
-          12.3325
+          45.443082,
+          12.334393
         ],
         [
-          45.442706,
-          12.332235
+          45.443272,
+          12.334167
         ],
         [
-          45.442834,
-          12.332106
+          45.443612,
+          12.333694
         ],
         [
-          45.442902,
-          12.332037
+          45.443972,
+          12.333139
         ],
         [
-          45.442967,
-          12.331965
+          45.444086,
+          12.332922
         ],
         [
-          45.442976,
-          12.331957
+          45.444103,
+          12.33289
+        ],
+        [
+          45.444086,
+          12.332872
+        ],
+        [
+          45.444007,
+          12.332788
+        ],
+        [
+          45.443994,
+          12.332773
+        ],
+        [
+          45.443859,
+          12.332663
+        ],
+        [
+          45.443726,
+          12.332674
+        ],
+        [
+          45.443716,
+          12.332663
+        ],
+        [
+          45.443704,
+          12.33265
+        ],
+        [
+          45.443683,
+          12.332621
+        ],
+        [
+          45.443655,
+          12.332582
+        ],
+        [
+          45.443626,
+          12.332542
+        ],
+        [
+          45.443372,
+          12.332205
+        ],
+        [
+          45.443349,
+          12.332175
+        ],
+        [
+          45.443343,
+          12.332168
+        ],
+        [
+          45.443323,
+          12.332141
+        ],
+        [
+          45.443287,
+          12.332095
+        ],
+        [
+          45.443252,
+          12.33205
+        ],
+        [
+          45.443184,
+          12.331945
+        ],
+        [
+          45.443126,
+          12.331856
         ],
         [
           45.443112,
@@ -3009,6 +3512,14 @@ const steps = [
           12.330081
         ],
         [
+          45.443505,
+          12.329985
+        ],
+        [
+          45.443658,
+          12.330081
+        ],
+        [
           45.443712,
           12.329975
         ],
@@ -3053,92 +3564,28 @@ const steps = [
           12.329446
         ],
         [
-          45.44388,
-          12.329432
+          45.443897,
+          12.329442
         ],
         [
-          45.443887,
-          12.329409
+          45.443919,
+          12.329309
         ],
         [
-          45.443863,
-          12.32939
+          45.443927,
+          12.329204
         ],
         [
-          45.443839,
-          12.329371
+          45.443928,
+          12.329192
         ],
         [
-          45.443815,
-          12.329353
+          45.443932,
+          12.32915
         ],
         [
-          45.443791,
-          12.329334
-        ],
-        [
-          45.443787,
-          12.329342
-        ],
-        [
-          45.443783,
-          12.32934
-        ],
-        [
-          45.44378,
-          12.329337
-        ],
-        [
-          45.44378,
-          12.329337
-        ],
-        [
-          45.443789,
-          12.329313
-        ],
-        [
-          45.443799,
-          12.329289
-        ],
-        [
-          45.443809,
-          12.329265
-        ],
-        [
-          45.443827,
-          12.329218
-        ],
-        [
-          45.443838,
-          12.329191
-        ],
-        [
-          45.443845,
-          12.329172
-        ],
-        [
-          45.443876,
-          12.329188
-        ],
-        [
-          45.443878,
-          12.329179
-        ],
-        [
-          45.443887,
-          12.329114
-        ],
-        [
-          45.443902,
-          12.328933
-        ],
-        [
-          45.443912,
-          12.328813
-        ],
-        [
-          45.443925,
-          12.328595
+          45.443973,
+          12.328629
         ],
         [
           45.443963,
@@ -3387,154 +3834,78 @@ const steps = [
       ],
       "tappeGoogle": [
         "Piazza San Marco, Venezia",
-        "Mercerie, Venezia",
-        "Rialto, Venezia",
+        "Teatro La Fenice, Venezia",
+        "Ponte di Rialto, Venezia",
+        "Campo Santi Apostoli, Venezia",
+        "Ponte Chiodo, Venezia",
         "Strada Nova, Venezia"
       ],
-      "fonte": "https://routing.openstreetmap.de/about.html"
-    }
-  },
-  {
-    "mostraDal": "2026-10-15T17:15:00+02:00",
-    "orario": "17:15–17:40",
-    "titolo": "Una pausa prima del ritorno",
-    "testo": "Tempo libero vicino alla stazione: bagno, caffè o piccolo spuntino.",
-    "mappa": {
-      "destinazione": "Venezia Santa Lucia",
-      "modo": "place",
-      "titolo": "Il ritrovo in stazione",
-      "indicazioni": "Restiamo nei pressi di Venezia Santa Lucia. Controlliamo sui tabelloni il binario del treno per Bassano.",
-      "punti": [
+      "fonte": "https://routing.openstreetmap.de/about.html",
+      "mostraCheckpoint": true,
+      "programma": [
         {
-          "nome": "Venezia Santa Lucia",
-          "pos": [
-            45.44108,
-            12.32103
-          ]
-        }
-      ],
-      "fonte": "https://www.openstreetmap.org/node/6063641885"
-    }
-  },
-  {
-    "mostraDal": "2026-10-15T17:40:00+02:00",
-    "orario": "17:40–17:57",
-    "titolo": "Pronti a ripartire",
-    "testo": "Controlliamo il binario e saliamo a bordo.",
-    "mappa": {
-      "destinazione": "Venezia Santa Lucia",
-      "modo": "place",
-      "titolo": "Il ritrovo in stazione",
-      "indicazioni": "Restiamo nei pressi di Venezia Santa Lucia. Controlliamo sui tabelloni il binario del treno per Bassano.",
-      "punti": [
-        {
-          "nome": "Venezia Santa Lucia",
-          "pos": [
-            45.44108,
-            12.32103
-          ]
-        }
-      ],
-      "fonte": "https://www.openstreetmap.org/node/6063641885"
-    }
-  },
-  {
-    "mostraDal": "2026-10-15T17:57:00+02:00",
-    "orario": "17:57–19:12",
-    "titolo": "Verso Bassano",
-    "testo": "Treno diretto per Bassano. Partenza alle 17:57, arrivo alle 19:12."
-  },
-  {
-    "mostraDal": "2026-10-15T19:30:00+02:00",
-    "orario": "19:30–19:45",
-    "titolo": "Un brindisi ci sta",
-    "testo": "È il momento dell’aperitivo!",
-    "mappa": {
-      "destinazione": "Trattoria Bigoleria Bellan da Alice, Via de Blasi 9, Bassano del Grappa",
-      "modo": "walking",
-      "titolo": "Un aperitivo alla Bigoleria",
-      "indicazioni": "Dalla stazione di Bassano raggiungiamo la Trattoria Bigoleria Bellan / Da Alice, in Via de Blasi 9, per l’aperitivo prima di cena.",
-      "punti": [
-        {
-          "nome": "Stazione di Bassano",
-          "pos": [
-            45.7666297,
-            11.7412694
-          ]
+          "punto": 1,
+          "orario": "14:45",
+          "tappa": "Piazza San Marco"
         },
         {
-          "nome": "Trattoria Bellan / Da Alice",
-          "pos": [
-            45.767682,
-            11.740924
-          ]
+          "punto": 2,
+          "orario": "~15:05",
+          "tappa": "Partenza da San Marco verso La Fenice"
+        },
+        {
+          "punto": 3,
+          "orario": "~15:15",
+          "tappa": "Teatro La Fenice"
+        },
+        {
+          "punto": 4,
+          "orario": "~15:40",
+          "tappa": "Ponte di Rialto"
+        },
+        {
+          "punto": 5,
+          "orario": "~16:00",
+          "tappa": "Campo Santi Apostoli"
+        },
+        {
+          "punto": 6,
+          "orario": "~16:15",
+          "tappa": "Ponte Chiodo"
+        },
+        {
+          "punto": 7,
+          "orario": "17:15",
+          "tappa": "Venezia Santa Lucia"
         }
-      ],
-      "fonte": "https://www.tripadvisor.it/Restaurant_Review-g194685-d34477706-Reviews-Trattoria_bigoleria_da_Alice-Bassano_Del_Grappa_Province_of_Vicenza_Veneto.html",
-      "origine": "Stazione di Bassano del Grappa",
-      "percorso": [
-        [
-          45.766634,
-          11.741302
-        ],
-        [
-          45.766547,
-          11.741321
-        ],
-        [
-          45.766538,
-          11.741238
-        ],
-        [
-          45.766574,
-          11.74123
-        ],
-        [
-          45.766602,
-          11.741223
-        ],
-        [
-          45.766601,
-          11.741211
-        ],
-        [
-          45.7666,
-          11.741201
-        ],
-        [
-          45.766675,
-          11.741183
-        ],
-        [
-          45.766682,
-          11.741181
-        ],
-        [
-          45.766874,
-          11.741139
-        ],
-        [
-          45.767039,
-          11.741081
-        ],
-        [
-          45.76733,
-          11.741006
-        ],
-        [
-          45.767682,
-          11.740924
-        ]
       ]
     }
   },
-  {
+  { // Tappa 13 · Una pausa prima del ritorno
+    "mostraDal": "2026-10-15T17:15:00+02:00",
+    "orario": "17:15–17:57",
+    "titolo": "Una pausa prima del ritorno",
+    "testo": "Prima di salutare Venezia, ci concediamo ancora un caffè, un piccolo spuntino o una pausa bagno vicino alla stazione. Poi controlliamo il binario e saliamo tutti insieme sul treno per Bassano."
+  },
+  { // Tappa 14 · Verso Bassano
+    "mostraDal": "2026-10-15T17:57:00+02:00",
+    "orario": "17:57–19:12",
+    "titolo": "Verso Bassano",
+    "testo": "Direzione Bassano! Dopo tutti quei ponti, un sedile sembra già un regalo. Riposa le gambe, Livio… e non chiedere se la festa è finita: siamo ancora tutti qui! 😉"
+  },
+  { // Tappa 15 · Un brindisi ci sta
+    "mostraDal": "2026-10-15T19:30:00+02:00",
+    "orario": "19:30–19:45",
+    "titolo": "Un brindisi ci sta",
+    "testo": "Andiamo a fare aperitivo qui vicino: la mappa non serve più. 🥂"
+  },
+  { // Tappa 16 · La festa continua a tavola
     "mostraDal": "2026-10-15T19:45:00+02:00",
     "orario": "19:45–21:30",
     "titolo": "La festa continua a tavola",
-    "testo": "Cena alla Bigoleria Bellan, con torta, candeline e brindisi per i tuoi 70 anni."
+    "testo": "Già che siamo qui, ci fermiamo anche a cena! Mettiti comodo, Livio: stasera non cucini tu! 😉"
   },
-  {
+  { // Tappa 17 · Una giornata da ricordare
     "mostraDal": "2026-10-15T21:30:00+02:00",
     "orario": "",
     "titolo": "Una giornata da ricordare",
@@ -3575,9 +3946,16 @@ function showRouteMap(info) {
     }).addTo(routeMap);
     const positions = info.punti.map(point => point.pos);
     if (info.percorso?.length) L.polyline(info.percorso, {color:'#ad4937', weight:4, dashArray:info.percorsoIndicativo ? '5 7' : null}).addTo(routeMap);
-    info.punti.filter((point, index, points) => index === 0 || index === points.length - 1).forEach((point,index) => {
-      L.circleMarker(point.pos, {radius:7,color:'#204653',fillColor:'#f8f1e3',fillOpacity:1,weight:3})
-        .addTo(routeMap).bindTooltip(point.nome,{permanent:true,direction:index === 0 ? 'bottom' : 'top'});
+    info.punti.filter((point, index, points) => info.mostraCheckpoint || index === 0 || index === points.length - 1).forEach((point,index) => {
+      if (info.mostraCheckpoint) {
+        L.marker(point.pos, {
+          icon:L.divIcon({className:'checkpoint-marker', html:String(index + 1), iconSize:[26,26], iconAnchor:[13,13]}),
+          title:point.nome, alt:point.nome
+        }).addTo(routeMap).bindTooltip(point.nome).bindPopup(point.nome);
+      } else {
+        L.circleMarker(point.pos, {radius:7,color:'#204653',fillColor:'#f8f1e3',fillOpacity:1,weight:3})
+          .addTo(routeMap).bindTooltip(point.nome,{permanent:true,direction:index === 0 ? 'bottom' : 'top'});
+      }
     });
     routeMap.fitBounds(info.percorso || positions,{padding:[65,60],maxZoom:18});
   });
@@ -3588,6 +3966,16 @@ function render() {
   if (map) {
     el('map-title').textContent = map.titolo;
     el('map-description').textContent = map.indicazioni;
+    el('map-programme').hidden = !map.programma?.length;
+    el('map-programme-body').replaceChildren(...(map.programma || []).map(checkpoint => {
+      const row = document.createElement('tr');
+      [checkpoint.punto, checkpoint.orario, checkpoint.tappa].forEach(value => {
+        const cell = document.createElement('td');
+        cell.textContent = value;
+        row.append(cell);
+      });
+      return row;
+    }));
     const mode = map.modo || 'walking';
     el('map-link').hidden = false;
     showRouteMap(map);
