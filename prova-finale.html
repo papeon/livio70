@@ -106,6 +106,9 @@
     @media(max-width:600px) { .step-map { padding:14px; } .step-map #map-frame { height:350px; } }
     .step-map .map-note { font:13px/1.5 Arial,sans-serif; margin:12px 0; }
     #map-frame { z-index:0; }
+    /* La mappa è un’anteprima: tutti i gesti devono restare al browser,
+       anche quando lo zoom della pagina la porta a occupare lo schermo. */
+    #map-frame, #map-frame * { pointer-events:none !important; touch-action:auto !important; }
     #map-frame .leaflet-tooltip { font:12px Arial,sans-serif; }
     #map-programme { width:100%; border-collapse:collapse; margin:18px 0 24px; font:14px/1.5 Arial,sans-serif; }
     #map-programme caption { text-align:left; font-weight:bold; margin-bottom:10px; }
@@ -4120,7 +4123,10 @@ function showRouteMap(info) {
       return;
     }
     el('map-frame').textContent = '';
-    routeMap = L.map('map-frame', {zoomControl:false, scrollWheelZoom:false});
+    routeMap = L.map('map-frame', {
+      zoomControl:false, dragging:false, touchZoom:false, scrollWheelZoom:false,
+      doubleClickZoom:false, boxZoom:false, keyboard:false, tapHold:false
+    });
     routeMap.attributionControl.setPrefix(false);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom:19, attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
