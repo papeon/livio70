@@ -4297,6 +4297,9 @@ function render() {
   el('landing').hidden = introIsVisible() || current !== 0;
   el('step').hidden = !adventureStarted || current === 0;
   el('programme').hidden = !adventureStarted || current <= 1;
+  el('programme-title').textContent = current === steps.length
+    ? 'La nostra avventura, un ricordo per sempre'
+    : 'La giornata fin qui';
   el('step-footer').hidden = !adventureStarted || current === 0;
   el('programme-list').replaceChildren(...steps.slice(0, Math.max(0, current - 1)).map(({orario, titolo, testo}, index) => {
     const item = document.createElement('li');
