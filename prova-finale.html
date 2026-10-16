@@ -4156,7 +4156,7 @@ function showRouteMap(info) {
           .addTo(routeMap).bindTooltip(point.nome,{permanent:true,direction:index === 0 ? 'bottom' : 'top'});
       }
     });
-    routeBounds = info.percorso || positions;
+    routeBounds = L.latLngBounds([...(info.percorso || []), ...positions]);
     fitRoute();
     routeMap.on('zoomend', updateMapControls);
     el('map-controls').hidden = false;
@@ -4169,11 +4169,19 @@ function updateMapControls() {
   el('map-zoom-out').disabled = routeMap.getZoom() <= routeMap.getMinZoom();
 }
 function fitRoute() {
-  if (routeMap && routeBounds) routeMap.fitBounds(routeBounds,{padding:[65,60],maxZoom:18,animate:false});
+  if (!routeMap || !routeBounds) return;
+  // Ricalcola anche dopo ridimensionamenti o zoom della pagina nel browser.
+  routeMap.stop();
+  routeMap.invalidateSize({pan:false, animate:false});
+  const size = routeMap.getSize();
+  const padding = [Math.min(130, size.x * .3), Math.min(120, size.y * .3)];
+  const zoom = Math.min(18, routeMap.getBoundsZoom(routeBounds, false, padding));
+  routeMap.setView(routeBounds.getCenter(), zoom, {animate:false});
+  updateMapControls();
 }
 el('map-zoom-in').addEventListener('click', () => { if (routeMap) routeMap.zoomIn(1,{animate:false}); });
 el('map-zoom-out').addEventListener('click', () => { if (routeMap) routeMap.zoomOut(1,{animate:false}); });
-el('map-fit').addEventListener('click', fitRoute);
+el('map-fit').addEventListener('click', () => fitRoute());
 function render() {
   const map = adventureStarted && current > 0 ? steps[current - 1].mappa : null;
   el('step-map').hidden = !map;
