@@ -196,6 +196,28 @@
     .map-dialog #map-fullscreen { display:none; }
     .map-dialog :focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
     .map-dialog #map-frame, .map-dialog #map-frame * { pointer-events:auto !important; touch-action:none !important; }
+    .test-simulation { width:100%; }
+    .test-simulation summary { cursor:pointer; padding:10px 0; font:13px Arial,sans-serif; }
+    .test-simulation[open] .test-clock { margin-top:8px; }
+    @media(max-width:600px) {
+      .test-controls { position:relative; padding:12px; }
+      .test-controls-inner { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; }
+      .test-controls small { font-size:9px; letter-spacing:.5px; }
+      #progress, #test-now { font-size:12px; }
+      #close-test { grid-column:2; grid-row:1; padding:8px; font-size:11px; }
+      .test-buttons { grid-column:1/-1; display:grid; grid-template-columns:1fr 44px 1fr 44px; gap:6px; }
+      .test-controls .test-buttons button { padding:10px 4px; min-height:44px; font-size:12px; }
+      .test-simulation { grid-column:1/-1; min-width:0; }
+      .test-clock { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; }
+      .test-clock label[for="test-time"], #test-time { grid-column:1/-1; }
+      #test-time { width:100%; min-width:0; max-width:100%; font-size:16px; }
+      #test-speed { min-width:0; font-size:16px; }
+      .test-clock button { min-width:0; font-size:12px; }
+      .map-controls { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+      .map-controls button { min-width:0; min-height:46px; padding:10px; display:flex; align-items:center; justify-content:center; }
+      .map-controls > a { grid-column:1/-1; width:100%; margin-left:0; min-height:46px; padding:12px; font-size:14px; }
+      .map-dialog .map-controls { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    }
   </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -256,15 +278,15 @@
         <button id="reset" type="button">Ricomincia</button>
         <button id="next" class="next" type="button" aria-label="Step successivo">&gt;&gt;&gt;</button>
       </div>
-      <div class="test-clock">
+      <details class="test-simulation"><summary>Simula data e ora</summary><div class="test-clock">
         <label for="test-time">Data e ora italiana</label>
         <input id="test-time" type="datetime-local" step="1" value="2026-10-18T07:44:50" required>
         <label for="test-speed">Velocità</label>
         <select id="test-speed"><option value="1">1×</option><option value="60">60×</option><option value="600">600×</option></select>
         <button id="simulate" type="button">Avvia simulazione</button>
         <button id="pause" type="button" disabled>Pausa</button>
-        <button id="close-test" type="button">Chiudi test</button>
-      </div>
+      </div></details>
+      <button id="close-test" type="button">Chiudi test</button>
     </div>
   </nav>
 
