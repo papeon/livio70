@@ -183,11 +183,28 @@
     .map-controls button:first-child, .map-controls button:nth-child(2) { font-size:23px; line-height:1; }
     .map-controls button:disabled { opacity:.4; cursor:default; }
     .map-controls button:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    .map-dialog { position:fixed; inset:0; width:100%; max-width:none; height:100dvh; max-height:100dvh; margin:0; padding:0; border:0; background:var(--paper); color:var(--ink); }
+    .map-dialog[open] { display:flex; flex-direction:column; }
+    .map-dialog::backdrop { background:#204653cc; }
+    .map-dialog-header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex:none; padding: max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left)); border-bottom:1px solid #bdc8c0; }
+    .map-dialog-header h2 { margin:0; font-size:clamp(18px,4vw,26px); font-weight:normal; }
+    .map-dialog-header button { flex:none; min-height:48px; padding:12px 18px; border:0; border-radius:3px; background:var(--ink); color:var(--paper); font:bold 14px Arial,sans-serif; cursor:pointer; }
+    #map-dialog-host { flex:1; min-height:0; display:flex; }
+    .map-dialog #map-view { display:flex; flex-direction:column; width:100%; min-height:0; }
+    .map-dialog #map-frame { flex:1; height:auto; min-height:0; }
+    .map-dialog .map-controls { flex:none; margin:0; padding:12px 16px max(12px,env(safe-area-inset-bottom)); background:var(--paper); }
+    .map-dialog #map-fullscreen { display:none; }
+    .map-dialog :focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
   </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
+  <dialog id="map-dialog" class="map-dialog" aria-labelledby="map-dialog-title">
+    <header class="map-dialog-header"><h2 id="map-dialog-title">Mappa del percorso</h2><button id="map-close" type="button">Chiudi ✕</button></header>
+    <div id="map-dialog-host"></div>
+  </dialog>
+
   <dialog id="waiting-dialog" class="code-dialog" aria-labelledby="waiting-title" aria-describedby="waiting-text">
     <h2 id="waiting-title">Piano, agente Livio! 🕵️</h2>
     <div id="waiting-text">
@@ -378,15 +395,17 @@
           <thead><tr><th scope="col">Punto</th><th scope="col">Orario</th><th scope="col">Tappa</th></tr></thead>
           <tbody id="map-programme-body"></tbody>
         </table>
+        <div id="map-home"><div id="map-view">
         <div id="map-frame" role="region" aria-label="Mappa del collegamento"></div>
         <div id="map-controls" class="map-controls" role="group" aria-label="Controlli della mappa" hidden>
           <button id="map-zoom-in" type="button" aria-label="Ingrandisci la mappa">+</button>
           <button id="map-zoom-out" type="button" aria-label="Riduci la mappa">−</button>
-          <button id="map-fit" type="button" aria-label="Mostra tutto il percorso" title="Mostra tutto il percorso">
+          <button id="map-fullscreen" type="button" aria-label="Apri mappa a pieno schermo" title="Apri mappa a pieno schermo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:block"><path d="M9 9 4 4m0 5V4h5M15 9l5-5m-5 0h5v5M9 15l-5 5m0-5v5h5m6-5 5 5m-5 0h5v-5"/></svg>
           </button>
+          <button id="map-fit" type="button">Ripristina percorso</button>
         </div>
-        
+        </div></div>
         <a id="map-link" target="_blank" rel="noopener noreferrer">Apri in Maps</a>
       </section>
 
@@ -4184,7 +4203,32 @@ function fitRoute() {
 el('map-zoom-in').addEventListener('click', () => { if (routeMap) routeMap.zoomIn(1,{animate:false}); });
 el('map-zoom-out').addEventListener('click', () => { if (routeMap) routeMap.zoomOut(1,{animate:false}); });
 el('map-fit').addEventListener('click', () => fitRoute());
+function openMapFullscreen() {
+  if (!routeMap || el('map-dialog').open) return;
+  el('map-dialog-title').textContent = el('map-title').textContent;
+  el('map-dialog-host').append(el('map-view'));
+  el('map-dialog').showModal();
+  el('map-close').focus();
+  requestAnimationFrame(fitRoute);
+}
+function closeMapFullscreen(restoreFocus = true) {
+  if (!el('map-dialog').open) return;
+  el('map-home').append(el('map-view'));
+  el('map-dialog').close();
+  if (restoreFocus) {
+    requestAnimationFrame(fitRoute);
+    el('map-fullscreen').focus({preventScroll:true});
+  }
+}
+el('map-fullscreen').addEventListener('click', openMapFullscreen);
+el('map-close').addEventListener('click', () => closeMapFullscreen());
+el('map-dialog').addEventListener('cancel', event => {
+  event.preventDefault();
+  closeMapFullscreen();
+});
+window.addEventListener('resize', () => { if (el('map-dialog').open) fitRoute(); });
 function render() {
+  closeMapFullscreen(false);
   const map = adventureStarted && current > 0 ? steps[current - 1].mappa : null;
   el('step-map').hidden = !map;
   if (map) {
