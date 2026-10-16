@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f7f2e8">
   <title>Buon compleanno, Livio!</title>
   <meta name="robots" content="noindex,nofollow">
-  <meta name="description" content="Buon compleanno, Livio! Una giornata di sorprese ti aspetta venerdì 16 ottobre.">
+  <meta name="description" content="Buon compleanno, Livio! Una giornata di sorprese ti aspetta domenica 18 ottobre.">
   <style>
     :root { color-scheme: light; --paper:#f8f1e3; --ink:#204653; --accent:#ad4937; }
     * { box-sizing:border-box; }
@@ -113,13 +113,182 @@
     #map-programme td:first-child { color:var(--accent); font-weight:bold; text-align:center; }
     #map-programme td:nth-child(2) { white-space:nowrap; }
     @media(max-width:600px) { #map-programme { font-size:12px; } #map-programme th, #map-programme td { padding:9px 4px; } }
-    .checkpoint-marker { border:2px solid #204653; border-radius:50%; background:#f8f1e3; color:#204653; text-align:center; font:bold 12px/22px Arial,sans-serif; box-shadow:0 1px 4px #0003; }
+    .checkpoint-marker { border:2px solid #204653; border-radius:50%; background:#f8f1e3; color:#204653; text-align:center; font:bold 13px/26px Arial,sans-serif; box-shadow:0 1px 4px #0003; }
+    .test-controls { position:sticky; top:0; z-index:1000; background:#204653; color:#fffaf0; padding:14px 18px; font:14px/1.4 Arial,sans-serif; }
+    .test-controls-inner { max-width:850px; margin:auto; display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+    .test-buttons, .test-clock { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .test-controls button, .test-controls input, .test-controls select { border:1px solid #fff7; border-radius:4px; padding:10px; font:14px Arial,sans-serif; }
+    .test-controls button { background:transparent; color:inherit; cursor:pointer; min-height:44px; }
+    .test-controls button:disabled { opacity:.4; cursor:default; }
+    .test-controls .next { background:#f8f1e3; color:#204653; }
+    .test-controls small { display:block; letter-spacing:1px; }
+    .test-controls input, .test-controls select { background:#fffaf0; color:#204653; }
+    .test-toggle { border:0; padding:0; background:none; color:inherit; font:inherit; letter-spacing:inherit; text-transform:inherit; cursor:pointer; }
+    .test-toggle:focus-visible, .test-controls :focus-visible { outline:3px solid #e6b373; outline-offset:3px; }
+    .intro-card h1 { margin:24px 0; }
+    .intro-card p { text-align:justify; hyphens:auto; }
+    .start-adventure { display:block; margin:30px auto; padding:16px 28px; border:1px solid var(--ink); border-radius:3px; background:var(--ink); color:var(--paper); font:bold 15px Arial,sans-serif; letter-spacing:2px; cursor:pointer; }
+    .start-adventure:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+    .secret-code-label { display:block; text-align:center; font:14px Arial,sans-serif; margin:24px 0 10px; }
+    .secret-code-input { display:block; width:min(100%,300px); margin:auto; padding:14px; border:1px solid #a6b4a7; border-radius:3px; background:#fffaf0; color:var(--ink); font:20px Arial,sans-serif; text-align:center; text-transform:uppercase; }
+    .secret-code-input:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    .code-dialog { width:min(100% - 40px,420px); padding:28px; border:1px solid #d5ccba; background:var(--paper); color:var(--ink); box-shadow:0 14px 55px #0003; }
+    .code-dialog::backdrop { background:#20465399; }
+    .code-dialog h2 { margin:0 0 18px; font-size:28px; font-weight:normal; }
+    .code-dialog p { font-size:18px; }
+    .code-dialog .start-adventure { margin-bottom:0; }
+    .mission-dialog { width:min(100% - 32px,540px); max-height:calc(100dvh - 32px); overflow:auto; padding:0; border:1px solid #b9ac91; background:var(--paper); color:var(--ink); box-shadow:0 24px 90px #0005; }
+    .mission-dialog::backdrop { background:#102c36df; backdrop-filter:blur(4px); }
+    .mission-dossier { position:relative; overflow:hidden; padding:38px 30px 24px; text-align:center; background:repeating-linear-gradient(0deg,transparent,transparent 31px,#20465308 32px); }
+    .mission-dossier::before { content:''; position:absolute; left:0; right:0; top:0; height:58px; z-index:4; background:linear-gradient(to bottom,transparent 0%,#e45a3c08 15%,#e45a3c20 30%,#ef674c50 43%,#ef674c65 47%,#ffb39b 49%,#dc4c32 52%,#ef674c65 54%,#ef674c50 57%,#e45a3c20 70%,#e45a3c08 85%,transparent 100%); filter:drop-shadow(0 0 12px #d94f3655); animation:mission-scan .8s linear 6 alternate both; pointer-events:none; transition:opacity .15s; }
+    .mission-dialog[data-stage="authorized"] .mission-dossier::before { opacity:0; }
+    .mission-classification { display:flex; justify-content:space-between; gap:12px; padding-bottom:14px; border-bottom:1px solid #b9ac91; font:10px/1.5 monospace; letter-spacing:2px; }
+    .mission-seal { display:grid; place-content:center; width:86px; height:86px; margin:24px auto 18px; border:1px solid #20465370; outline:1px dashed #20465370; outline-offset:5px; border-radius:50%; font:bold 38px Georgia,serif; }
+    .mission-status { min-height:36px; margin:24px 0 0; font:11px/1.6 monospace; letter-spacing:1.5px; text-align:center; }
+    .mission-stamp { display:block; width:min(100%,390px); margin:14px auto 22px; color:#287343; opacity:0; transform:scale(1.7) rotate(-9deg); }
+    .mission-stamp svg { display:block; width:100%; height:auto; overflow:visible; }
+    .mission-dialog[data-stage="authorized"] .mission-stamp { animation:mission-stamp .35s ease-out forwards; }
+    .mission-identity { font:12px/1.6 monospace; letter-spacing:1px; margin:0 0 8px; text-align:center; }
+    .mission-dialog h2 { font:normal clamp(28px,6vw,40px)/1.1 Georgia,serif; margin:14px 0; }
+    .mission-message { font-size:17px; line-height:1.5; text-align:center; margin:0 0 20px; }
+    .mission-reveal { opacity:0; transform:translateY(10px); transition:opacity .4s,transform .4s; }
+    .mission-dialog[data-stage="authorized"] .mission-reveal { opacity:1; transform:none; }
+    .mission-continue { display:block; width:min(100%,300px); min-height:52px; margin:28px auto 6px; padding:16px 28px; border:1px solid var(--ink); border-radius:3px; background:var(--ink); color:var(--paper); font:bold 15px Arial,sans-serif; letter-spacing:2px; cursor:pointer; transition:background .2s,box-shadow .2s; }
+    .mission-continue:hover { background:#2c5b69; box-shadow:0 3px 10px #20465325; }
+    .mission-continue:active { background:#173640; }
+    .mission-continue:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    @keyframes mission-scan { from { top:20%; } to { top:calc(88% - 58px); } }
+    @keyframes mission-stamp { to { opacity:1; transform:scale(1) rotate(-5deg); } }
+    @media(prefers-reduced-motion:reduce) {
+      .mission-dossier::before { animation:none; display:none; }
+      .mission-dialog[data-stage="authorized"] .mission-stamp { animation:none; opacity:1; transform:rotate(-5deg); }
+      .mission-reveal { transition:none; transform:none; }
+    }
+    .mission-dossier { min-height:360px; }
+    .mission-status { position:absolute; left:24px; right:24px; top:50%; transform:translateY(-50%); margin:0; min-height:0; padding:16px 10px; z-index:3; background:#f8f1e3eb; font-size:13px; letter-spacing:2px; }
+    .mission-dialog[data-stage="authorized"] .mission-status { display:none; }
+    .mission-dialog[data-stage="checking"] .mission-continue { visibility:hidden; }
+    .mission-stamp { margin-top:30px; }
+    .mission-dialog #mission-title { margin:28px 0 16px; font-size:clamp(30px,7vw,42px); line-height:1.1; }
+    #mission-title span { display:block; font-weight:bold; letter-spacing:2px; margin-top:6px; }
+    .mission-dialog[data-stage="checking"] #mission-title { position:absolute; left:24px; right:24px; top:50%; transform:translateY(-50%); margin:0; }
+    .mission-dialog[data-stage="checking"] .mission-status { top:calc(50% + 78px); }
+    #step-title[tabindex="-1"]:focus, #landing h1[tabindex="-1"]:focus { outline:none; }
+    #waiting-dialog p + p { margin-top:18px; }
   </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
-  <main><div id="landing">
+  <dialog id="waiting-dialog" class="code-dialog" aria-labelledby="waiting-title" aria-describedby="waiting-text">
+    <h2 id="waiting-title">Piano, agente Livio! 🕵️</h2>
+    <div id="waiting-text">
+      <p>È tutto sotto controllo, ma non è ancora il momento di partire.</p>
+      <p>Torna qui domani mattina, prima di uscire di casa: troverai nuove istruzioni.</p>
+      <p>Intanto, vai a preparare lo zaino!</p>
+    </div>
+    <form method="dialog"><button class="start-adventure" type="submit">VA BENE, ASPETTO…</button></form>
+  </dialog>
+
+  <dialog id="mission-dialog" class="mission-dialog" aria-labelledby="mission-title" aria-describedby="mission-status">
+    <div class="mission-dossier">
+      <div class="mission-classification"><span>Dossier riservato</span><span>Nr. 0000070</span></div>
+      <h2 id="mission-title">Operazione <span>VENEZIA</span></h2>
+      <p id="mission-status" class="mission-status" role="status">VERIFICA CODICE…</p>
+      <div class="mission-stamp">
+        <svg viewBox="0 0 400 142" role="img" aria-label="Accesso autorizzato" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="authorized-ink" x="-10%" y="-20%" width="120%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.065" numOctaves="3" seed="70" result="grain"/>
+              <feDisplacementMap in="SourceGraphic" in2="grain" scale="3" xChannelSelector="R" yChannelSelector="G" result="rough"/>
+              <feColorMatrix in="grain" type="luminanceToAlpha" result="wear"/>
+              <feComponentTransfer in="wear" result="ink-mask"><feFuncA type="discrete" tableValues="0 1 1 1 1"/></feComponentTransfer>
+              <feComposite in="rough" in2="ink-mask" operator="in"/>
+            </filter>
+          </defs>
+          <g filter="url(#authorized-ink)" fill="currentColor">
+            <path d="M13 10L386 12L388 130L11 128Z" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M22 20L378 21L377 120L22 119Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="200" y="64" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="45" letter-spacing="6">ACCESSO</text>
+            <text x="200" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="34" letter-spacing="2">AUTORIZZATO</text>
+          </g>
+        </svg>
+      </div>
+      <div class="mission-reveal">
+        <p class="mission-identity">AGENTE LIVIO · CLASSE 1956</p>
+        <p class="mission-message">Identità confermata. La mamma ha parlato.<br><strong>Missione avviata.</strong></p>
+      </div>
+      <button id="mission-continue" class="mission-continue" type="button">PROSEGUI →</button>
+    </div>
+  </dialog>
+  <nav id="test-controls" class="test-controls" aria-label="Controlli di prova" hidden>
+    <div class="test-controls-inner">
+      <div><small>Pagina di prova · <span id="mode">orario automatico</span></small><span id="progress" aria-live="polite"></span><div id="test-now"></div></div>
+      <div class="test-buttons">
+        <button id="auto" type="button">Ora reale</button>
+        <button id="back" type="button" aria-label="Step precedente">&lt;&lt;&lt;</button>
+        <button id="reset" type="button">Ricomincia</button>
+        <button id="next" class="next" type="button" aria-label="Step successivo">&gt;&gt;&gt;</button>
+      </div>
+      <div class="test-clock">
+        <label for="test-time">Data e ora italiana</label>
+        <input id="test-time" type="datetime-local" step="1" value="2026-10-18T07:44:50" required>
+        <label for="test-speed">Velocità</label>
+        <select id="test-speed"><option value="1">1×</option><option value="60">60×</option><option value="600">600×</option></select>
+        <button id="simulate" type="button">Avvia simulazione</button>
+        <button id="pause" type="button" disabled>Pausa</button>
+        <button id="close-test" type="button">Chiudi test</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="intro" class="intro-card" aria-labelledby="intro-title" hidden>
+      <header class="step-header">
+        <div><div class="eyebrow">Una cartolina per te · INIZIAMO</div>
+        <h1 id="intro-title">Allora Livio, sei pronto?</h1></div>
+      <div class="postage" aria-hidden="true"><div class="stamp">
+        <svg viewBox="0 0 150 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="115" cy="30" r="15" fill="#efe1ab"/>
+          <text x="144" y="35" text-anchor="end" fill="var(--accent)" font-family="Georgia, serif" font-size="44" font-weight="bold">70</text>
+          <path d="M0 111H150V160H0Z" fill="#81a9ab"/>
+          <path d="M8 113V85H20V74H36V86H48V113M52 113V92H68V113M78 113V61H88V113M77 61L83 46L89 61" fill="#f6ebd3" stroke="#315766" stroke-width="2"/>
+          <path d="M96 113V85H106V75Q115 52 124 75V85H137V113M106 85H124M115 56V47M111 51H119" fill="#f6ebd3" stroke="#315766" stroke-width="2"/>
+          <path d="M10 126Q31 121 52 126T94 126T145 126M0 140Q22 135 43 140T85 140T135 140M20 151Q40 146 61 151T103 151" stroke="#e3eee5" stroke-width="2"/>
+          <path d="M43 135Q65 145 88 133L80 142H54Z" fill="#204653"/>
+        </svg><span class="label">Venezia</span></div>
+        <svg class="postmark postal-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <path id="intro-stamp-top" d="M 15,60 A 45,45 0 0,1 105,60"/>
+            <path id="intro-stamp-bottom" d="M 16,60 A 44,44 0 0,0 104,60"/>
+          </defs>
+          <circle cx="60" cy="60" r="58"/>
+          <path d="M 26.62,46.51 A 36,36 0 0,1 93.38,46.51 M 93.38,73.49 A 36,36 0 0,1 26.62,73.49" stroke-width="0.7"/>
+          <text class="rim top"><textPath href="#intro-stamp-top" startOffset="50%" text-anchor="middle">BUON COMPLEANNO</textPath></text>
+          <text class="rim bottom" dy="8"><textPath href="#intro-stamp-bottom" startOffset="50%" text-anchor="middle">POSTA SPECIALE</textPath></text>
+
+
+          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">18 OTT 2026</text>
+        </svg>
+      </div>
+      </header>
+      <p>Scarpe allacciate, zaino in spalla… non hai dimenticato niente? Neanche la mamma? Bene, possiamo cominciare! 😄</p>
+      <p>Dove ti portiamo oggi lo scoprirai un pezzo alla volta, ma per iniziare un’avventura segreta serve un codice segreto.</p>
+      <p>Tu non lo sai, ma la mamma sì. Anche stavolta.</p>
+      <p>No codice, no party. 😉</p>
+      <form id="adventure-form" novalidate>
+        <label for="secret-code" class="secret-code-label">Codice segreto</label>
+        <input id="secret-code" class="secret-code-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="code-error-text">
+        <button id="start-adventure" class="start-adventure" type="submit">INIZIA</button>
+      </form>
+      <dialog id="code-error" class="code-dialog" aria-labelledby="code-error-title" aria-describedby="code-error-text">
+        <h2 id="code-error-title">Mmm… non è quello! 🕵️</h2>
+        <p id="code-error-text">O l’hai digitato male… o la mamma ti ha dato quello sbagliato. Sta facendo la finanza? 😂<br>Riprova, oppure torna a trattare con lei!</p>
+        <form method="dialog"><button class="start-adventure" type="submit">RIPROVA</button></form>
+      </dialog>
+      <footer>70 anni · La curiosità continua · <button type="button" class="test-toggle" aria-controls="test-controls" aria-expanded="false">Livio 70</button></footer>
+    </section>
+<div id="landing" hidden>
     <div class="eyebrow">Una cartolina per te</div>
     <header class="hero">
       <div><div class="age" aria-label="70 anni">70<small aria-hidden="true">anni di curiosità</small></div><h1>Buon compleanno,<br><span>Livio!</span> 🥂</h1></div>
@@ -144,14 +313,14 @@
           <text class="rim bottom" dy="8"><textPath href="#stamp-bottom" startOffset="50%" text-anchor="middle">POSTA SPECIALE</textPath></text>
           
           
-          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">16 OTT 2026</text>
+          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">18 OTT 2026</text>
         </svg>
       </div>
     </header>
     <p>Se sei arrivato fin qui, il francobollo ha funzionato. E tu, a 70 anni, sei ancora curioso e tecnologicamente al passo con i tempi. Ottimo segno! 😄</p>
-    <p>Venerdì 16 ottobre ti basterà prendere il <strong>treno per Venezia</strong> e lasciarti guidare. Noi saremo lì ad aspettarti!</p>
+    <p>Domenica 18 ottobre ti basterà prendere il <strong>treno per Venezia</strong> e lasciarti guidare. Noi saremo lì ad aspettarti!</p>
     <div class="ticket journey" aria-label="Dettagli del viaggio in treno">
-      <small class="journey-heading">Venerdì 16 ottobre 2026 · Regionale 16311</small>
+      <small class="journey-heading">Domenica 18 ottobre 2026 · Regionale 16311</small>
       <div class="journey-stop"><small>Partenza da</small><p><strong>Bassano del Grappa</strong></p><div class="journey-time">8:20</div></div>
       <div class="journey-stop arrival"><small>Arrivo a</small><p><strong>Venezia Santa Lucia</strong></p><div class="journey-time">9:33</div></div>
     </div>
@@ -160,9 +329,9 @@
     <p>Per pranzo abbiamo organizzato un <strong>picnic</strong>: porta quello che serve a te e alla mamma. Metti in borsa anche <strong>un ombrello e un K-way</strong>, nel caso piovesse. Niente ci fermerà, nemmeno qualche goccia d’acqua!</p>
     </section>
     <p class="destination">Destinazione <strong>Venezia</strong>.<span>Il resto sarà una sorpresa.</span></p>
-    <div class="note"><p>Questa pagina conosce già tutto il programma, ma parlerà soltanto al momento giusto. Venerdì torna a darle un’occhiata ogni tanto: ti svelerà la prossima tappa della giornata.</p></div>
+    <div class="note"><p>Questa pagina conosce già tutto il programma, ma parlerà soltanto al momento giusto. Domenica torna a darle un’occhiata ogni tanto: ti svelerà la prossima tappa della giornata.</p></div>
     <p class="signoff"><strong>Al resto abbiamo pensato noi.</strong></p>
-    <footer>70 anni · La curiosità continua</footer>
+    <footer>70 anni · La curiosità continua · <button type="button" class="test-toggle" aria-controls="test-controls" aria-expanded="false">Livio 70</button></footer>
 </div>
     <article id="step" class="step-card" hidden aria-live="polite" aria-atomic="true">
       <header class="step-header">
@@ -189,7 +358,7 @@
           <text class="rim bottom" dy="8"><textPath href="#step-stamp-bottom" startOffset="50%" text-anchor="middle">POSTA SPECIALE</textPath></text>
           
           
-          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">16 OTT 2026</text>
+          <text class="date" x="60" y="61" text-anchor="middle" dominant-baseline="middle">18 OTT 2026</text>
         </svg>
       </div>
       </header>
@@ -212,32 +381,32 @@
       <h2 id="programme-title">La giornata fin qui</h2>
       <ol id="programme-list"></ol>
     </section>
-    <footer id="step-footer" hidden style="margin-top:32px">Una sorpresa alla volta · Livio 70</footer>
+    <footer id="step-footer" hidden style="margin-top:32px">Una sorpresa alla volta · <button type="button" class="test-toggle" aria-controls="test-controls" aria-expanded="false">Livio 70</button></footer>
   </main>
 <script>
-// Prova finale del 16 ottobre 2026, ora italiana (UTC+02:00).
+// Prova finale del 18 ottobre 2026, ora italiana (UTC+02:00).
 // Ogni tappa si attiva all’inizio della propria fascia oraria; saluto finale alle 21:30.
 const steps = [
   { // Tappa 1 · Serve un parcheggio...
-    "mostraDal": "2026-10-16T07:45:00+02:00",
+    "mostraDal": null,
     "orario": "7:45–8:00",
     "titolo": "Serve un parcheggio...",
-    "testo": "Parti per tempo per trovare un parcheggio comodo. Poi controlla da che binario parte il treno."
+    "testo": "Per iniziare l’avventura serve, ovviamente, un posto dove lasciare l’auto finché siamo via. Potrai ritirarla prima di notte, tranquillo!\n\nParti quindi per tempo per trovare un parcheggio comodo. Poi controlla da che binario parte il treno."
   },
   { // Tappa 2 · Che la festa cominci!
-    "mostraDal": "2026-10-16T08:00:00+02:00",
+    "mostraDal": "2026-10-18T08:10:00+02:00",
     "orario": "8:00–8:20",
     "titolo": "Che la festa cominci!",
     "testo": "SORPRESA! 🥳\nQuesta non te l’aspettavi, eh? E invece la giornata comincia proprio così! Ora saliamo tutti insieme sul Regionale 16311 per Venezia e andiamo a divertirci."
   },
   { // Tappa 3 · Direzione Venezia
-    "mostraDal": "2026-10-16T08:20:00+02:00",
+    "mostraDal": "2026-10-18T08:20:00+02:00",
     "orario": "8:20–9:33",
     "titolo": "Direzione Venezia",
     "testo": "Adesso rilassati e goditi il viaggio! Sei curioso di sapere cosa ti aspetta a Venezia? Ti diamo un indizio: devi scendere dal treno! 😄 Torna qui quando arrivi, ti sveleremo la prossima tappa."
   },
   { // Tappa 4 · Benvenuto a Venezia!
-    "mostraDal": "2026-10-16T09:33:00+02:00",
+    "mostraDal": "2026-10-18T09:33:00+02:00",
     "orario": "9:33–10:00",
     "titolo": "Benvenuto a Venezia!",
     "testo": "La prossima destinazione è Murano! Raggiungiamo l’imbarcadero per prendere il vaporetto.",
@@ -330,7 +499,7 @@ const steps = [
     }
   },
   { // Tappa 5 · Verso Murano
-    "mostraDal": "2026-10-16T10:00:00+02:00",
+    "mostraDal": "2026-10-18T10:00:00+02:00",
     "orario": "10:00–10:33",
     "titolo": "Verso Murano",
     "testo": "La festa prende il largo! Goditi il panorama della laguna mentre ci avviciniamo a Murano. Per ora rilassati: il riscaldamento comincia appena scendiamo! 😉",
@@ -923,7 +1092,7 @@ const steps = [
     }
   },
   { // Tappa 6 · Gambe in spalla!
-    "mostraDal": "2026-10-16T10:33:00+02:00",
+    "mostraDal": "2026-10-18T10:33:00+02:00",
     "orario": "10:33–11:00",
     "titolo": "Gambe in spalla!",
     "testo": "Eccoci a Murano! Ora gambe in spalla: in fornace ci aspettano alle 11:00. Il riscaldamento per spegnere le 70 candeline comincia da qui! 😄",
@@ -1148,13 +1317,13 @@ const steps = [
     }
   },
   { // Tappa 7 · La sorpresa sotto vetro
-    "mostraDal": "2026-10-16T11:00:00+02:00",
+    "mostraDal": "2026-10-18T11:00:00+02:00",
     "orario": "11:00–11:45",
     "titolo": "La sorpresa sotto vetro",
     "testo": "Ti avevamo parlato di riscaldamento… ma non ti avevamo detto fino a che temperatura! Benvenuto in fornace, Livio: ora ci fermiamo a scoprire cosa sanno fare i maestri vetrai con il fuoco e il vetro. 😉"
   },
   { // Tappa 8 · Lungo i canali
-    "mostraDal": "2026-10-16T11:45:00+02:00",
+    "mostraDal": "2026-10-18T11:45:00+02:00",
     "orario": "11:45–12:45",
     "titolo": "Lungo i canali",
     "testo": "Riprendiamo il cammino, stavolta con un po’ più di calma. Direzione parco: tra un canale e un ponticello, ci avviciniamo al nostro picnic! 😉",
@@ -1510,13 +1679,13 @@ const steps = [
     }
   },
   { // Tappa 9 · È ora del picnic!
-    "mostraDal": "2026-10-16T12:45:00+02:00",
+    "mostraDal": "2026-10-18T12:45:00+02:00",
     "orario": "12:45–13:45",
     "titolo": "È ora del picnic!",
     "testo": "Finalmente scopriamo anche cosa c’è negli zaini! Tra tutte le sorprese di oggi, almeno il tuo panino dovresti riconoscerlo. Buon appetito, Livio! 😋"
   },
   { // Tappa 10 · Di nuovo in cammino
-    "mostraDal": "2026-10-16T13:45:00+02:00",
+    "mostraDal": "2026-10-18T13:45:00+02:00",
     "orario": "13:45–14:02",
     "titolo": "Di nuovo in cammino",
     "testo": "Salutiamo il parco: Venezia ci aspetta per il prossimo capitolo della festa!",
@@ -1652,7 +1821,7 @@ const steps = [
     }
   },
   { // Tappa 11 · Ritorno a Venezia
-    "mostraDal": "2026-10-16T14:02:00+02:00",
+    "mostraDal": "2026-10-18T14:02:00+02:00",
     "orario": "14:02–14:36",
     "titolo": "Ritorno a Venezia",
     "testo": "Salutiamo Murano dall’acqua e ci godiamo un altro pezzetto di laguna. La festa continua verso San Marco: Venezia ha ancora tanto da mostrarci!",
@@ -2232,7 +2401,7 @@ const steps = [
     }
   },
   { // Tappa 12 · Venezia, un passo alla volta
-    "mostraDal": "2026-10-16T14:36:00+02:00",
+    "mostraDal": "2026-10-18T14:36:00+02:00",
     "orario": "14:36–17:15",
     "titolo": "Venezia, un passo alla volta",
     "testo": "Eccoci nel cuore di Venezia! San Marco, la Fenice, Rialto… ti abbiamo organizzato un compleanno con i fiocchi, ma a quanto pare anche con parecchi ponti! 😉",
@@ -3865,47 +4034,78 @@ const steps = [
     }
   },
   { // Tappa 13 · Una pausa prima del ritorno
-    "mostraDal": "2026-10-16T17:15:00+02:00",
+    "mostraDal": "2026-10-18T17:15:00+02:00",
     "orario": "17:15–17:57",
     "titolo": "Una pausa prima del ritorno",
     "testo": "Prima di salutare Venezia, ci concediamo ancora un caffè, un piccolo spuntino o una pausa bagno vicino alla stazione. Poi controlliamo il binario e saliamo tutti insieme sul treno per Bassano."
   },
   { // Tappa 14 · Verso Bassano
-    "mostraDal": "2026-10-16T17:57:00+02:00",
+    "mostraDal": "2026-10-18T17:57:00+02:00",
     "orario": "17:57–19:12",
     "titolo": "Verso Bassano",
     "testo": "Direzione Bassano! Dopo tutti quei ponti, un sedile sembra già un regalo. Riposa le gambe, Livio… e non chiedere se la festa è finita: siamo ancora tutti qui! 😉"
   },
   { // Tappa 15 · Un brindisi ci sta
-    "mostraDal": "2026-10-16T19:30:00+02:00",
+    "mostraDal": "2026-10-18T19:30:00+02:00",
     "orario": "19:30–19:45",
     "titolo": "Un brindisi ci sta",
     "testo": "Andiamo a fare aperitivo qui vicino: la mappa non serve più. 🥂"
   },
   { // Tappa 16 · La festa continua a tavola
-    "mostraDal": "2026-10-16T19:45:00+02:00",
+    "mostraDal": "2026-10-18T19:45:00+02:00",
     "orario": "19:45–21:30",
     "titolo": "La festa continua a tavola",
-    "testo": "Già che siamo qui, ci fermiamo anche a cena! Mettiti comodo, Livio: stasera non cucini tu! 😉"
+    "testo": "Già che siamo qui, ci fermiamo anche a cena!\nMettiti comodo, Livio: stasera non cucini tu! 😉"
   },
   { // Tappa 17 · Una giornata da ricordare
-    "mostraDal": "2026-10-16T21:30:00+02:00",
+    "mostraDal": "2026-10-18T21:30:00+02:00",
     "orario": "",
     "titolo": "Una giornata da ricordare",
     "testo": "Che giornata fantastica, Livio! Tra sorprese, passeggiate e risate, abbiamo festeggiato i tuoi 70 anni nel modo più bello: insieme.\n\nSperiamo di averti regalato un ricordo speciale. Tu ne hai regalato uno a tutti noi: una di quelle giornate che continueremo a raccontare, con un sorriso, ancora per tanto tempo.\n\nBuon compleanno, Livio. Ti vogliamo bene! ❤️"
   }
 ];
+const introStartsAt = Date.parse('2026-10-18T00:00:00+02:00');
+const waitingStartsAt = Date.parse('2026-10-17T00:00:00+02:00');
+let waitingShown = false;
+const adventureStorageKey = 'livio70-adventure-started-2026-10-18';
+function introIsVisible() {
+  return clockMode === 'manual' ? manualScreen === 0 : !adventureStarted && pageNow() >= introStartsAt;
+}
+let adventureStarted = false;
+try { adventureStarted = localStorage.getItem(adventureStorageKey) === 'yes'; } catch { /* La pagina funziona anche senza memoria locale. */ }
 let current = 0;
+// Il test altera solo l’orologio della pagina; le date delle tappe restano originali.
+let clockMode = 'real';
+// Navigazione di prova: -1 cartolina, 0 introduzione, 1…17 tappe.
+let manualScreen = -1;
+let simulatedTime = 0;
+let simulationAnchor = 0;
+let simulationSpeed = 1;
+let simulationPaused = false;
+function pageNow() {
+  return clockMode === 'simulation'
+    ? simulatedTime + (simulationPaused ? 0 : (performance.now() - simulationAnchor) * simulationSpeed)
+    : Date.now();
+}
+const italianClock = new Intl.DateTimeFormat('it-IT', {
+  timeZone:'Europe/Rome', day:'2-digit', month:'2-digit', year:'numeric',
+  hour:'2-digit', minute:'2-digit', second:'2-digit'
+});
 function scheduledStep(now = Date.now()) {
-  let active = 0;
+  if (now < introStartsAt) return 0;
+  // Dopo INIZIA lo step 1 è disponibile da mezzanotte, senza un orario proprio.
+  let active = 1;
   steps.forEach((step, index) => {
     if (step.mostraDal && now >= Date.parse(step.mostraDal)) active = index + 1;
   });
   return active;
 }
 function syncClock() {
-  const active = scheduledStep();
-  if (active !== current) { current = active; render(); }
+  syncWaitingPopup();
+  updateTestControls();
+  if (clockMode === 'manual') return;
+  const active = scheduledStep(pageNow());
+  if (active !== current || el('intro').hidden === introIsVisible()) { current = active; render(); }
 }
 const el = id => document.getElementById(id);
 let routeMap = null;
@@ -3926,15 +4126,15 @@ function showRouteMap(info) {
       maxZoom:19, attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
     }).addTo(routeMap);
     const positions = info.punti.map(point => point.pos);
-    if (info.percorso?.length) L.polyline(info.percorso, {color:'#ad4937', weight:4, dashArray:info.percorsoIndicativo ? '5 7' : null}).addTo(routeMap);
+    if (info.percorso?.length) L.polyline(info.percorso, {color:'#ad4937', weight:5, dashArray:info.percorsoIndicativo ? '5 7' : null}).addTo(routeMap);
     info.punti.filter((point, index, points) => info.mostraCheckpoint || index === 0 || index === points.length - 1).forEach((point,index) => {
       if (info.mostraCheckpoint) {
         L.marker(point.pos, {
-          icon:L.divIcon({className:'checkpoint-marker', html:String(index + 1), iconSize:[26,26], iconAnchor:[13,13]}),
+          icon:L.divIcon({className:'checkpoint-marker', html:String(index + 1), iconSize:[30,30], iconAnchor:[15,15]}),
           title:point.nome, alt:point.nome
         }).addTo(routeMap).bindTooltip(point.nome).bindPopup(point.nome);
       } else {
-        L.circleMarker(point.pos, {radius:7,color:'#204653',fillColor:'#f8f1e3',fillOpacity:1,weight:3})
+        L.circleMarker(point.pos, {radius:8,color:'#204653',fillColor:'#f8f1e3',fillOpacity:1,weight:3})
           .addTo(routeMap).bindTooltip(point.nome,{permanent:true,direction:index === 0 ? 'bottom' : 'top'});
       }
     });
@@ -3942,7 +4142,7 @@ function showRouteMap(info) {
   });
 }
 function render() {
-  const map = current > 0 ? steps[current - 1].mappa : null;
+  const map = adventureStarted && current > 0 ? steps[current - 1].mappa : null;
   el('step-map').hidden = !map;
   if (map) {
     el('map-title').textContent = map.titolo;
@@ -3969,10 +4169,12 @@ function render() {
   } else {
     if (routeMap) { routeMap.remove(); routeMap = null; }
   }
-  el('landing').hidden = current !== 0;
-  el('step').hidden = current === 0;
-  el('programme').hidden = current <= 1;
-  el('step-footer').hidden = current === 0;
+  updateTestControls();
+  el('intro').hidden = !introIsVisible();
+  el('landing').hidden = introIsVisible() || current !== 0;
+  el('step').hidden = !adventureStarted || current === 0;
+  el('programme').hidden = !adventureStarted || current <= 1;
+  el('step-footer').hidden = !adventureStarted || current === 0;
   el('programme-list').replaceChildren(...steps.slice(0, Math.max(0, current - 1)).map(({orario, titolo, testo}, index) => {
     const item = document.createElement('li');
     item.dataset.step = index + 1;
@@ -3986,18 +4188,182 @@ function render() {
     return item;
   }));
   if (current > 0) {
-    el('step-label').textContent = `Step ${current} · Venerdì 16 ottobre 2026`;
+    el('step-label').textContent = `Step ${current} · Domenica 18 ottobre 2026`;
     const {orario, titolo, testo} = steps[current - 1];
     el('step-title').textContent = titolo;
     el('step-time').textContent = orario;
+    el('step-time').hidden = !orario;
     el('step-text').textContent = testo;
   }
 }
+function updateTestControls() {
+  el('mode').textContent = clockMode === 'manual' ? 'avanzamento manuale'
+    : clockMode === 'simulation' ? (simulationPaused ? 'simulazione in pausa' : 'orario simulato') : 'orario automatico';
+  el('progress').textContent = introIsVisible() ? 'Tappa zero · Introduzione' : current === 0 ? 'Messaggio iniziale' : `Tappa ${current} di ${steps.length}`;
+  el('test-now').textContent = clockMode === 'manual' ? '' : italianClock.format(pageNow());
+  el('back').disabled = clockMode === 'manual' ? manualScreen === -1 : current === 0 && !introIsVisible();
+  el('next').disabled = current === steps.length;
+  el('pause').disabled = clockMode !== 'simulation';
+  el('pause').textContent = simulationPaused ? 'Riprendi' : 'Pausa';
+}
+function go(value) {
+  clockMode = 'manual';
+  manualScreen = Math.max(-1, Math.min(steps.length, value));
+  adventureStarted = manualScreen > 0;
+  current = Math.max(0, manualScreen);
+  render();
+  window.scrollTo({top:0, behavior:'instant'});
+}
+function useRealClock() {
+  try { adventureStarted = localStorage.getItem(adventureStorageKey) === 'yes'; } catch { adventureStarted = false; }
+  clockMode = 'real';
+  simulationPaused = false;
+  current = scheduledStep();
+  render();
+  syncWaitingPopup();
+}
+function syncWaitingPopup() {
+  const dialog = el('waiting-dialog');
+  const now = pageNow();
+  const eligible = (clockMode === 'simulation' || (clockMode === 'real' && el('test-controls').hidden))
+    && now >= waitingStartsAt && now < introStartsAt;
+  if (!eligible) {
+    if (dialog.open) dialog.close();
+    return;
+  }
+  if (!waitingShown && !document.querySelector('dialog[open]')) {
+    waitingShown = true;
+    dialog.showModal();
+  }
+}
+function toggleTest(open) {
+  el('test-controls').hidden = !open;
+  if (open && el('waiting-dialog').open) el('waiting-dialog').close();
+  document.querySelectorAll('.test-toggle').forEach(button => button.setAttribute('aria-expanded', String(open)));
+  if (open) { go(-1); el('auto').focus(); }
+  else { useRealClock(); document.querySelectorAll('.test-toggle').forEach(button => { if (button.getClientRects().length) button.focus(); }); }
+}
+document.querySelectorAll('.test-toggle').forEach(button => button.addEventListener('click', () => toggleTest(el('test-controls').hidden)));
+el('close-test').addEventListener('click', () => toggleTest(false));
+el('auto').addEventListener('click', useRealClock);
+function testScreen() {
+  return clockMode === 'manual' ? manualScreen : introIsVisible() ? 0 : current === 0 ? -1 : current;
+}
+el('next').addEventListener('click', () => go(testScreen() + 1));
+el('back').addEventListener('click', () => go(testScreen() - 1));
+el('reset').addEventListener('click', () => go(-1));
+el('code-error').addEventListener('close', () => {
+  el('secret-code').focus();
+  el('secret-code').select();
+});
+el('secret-code').addEventListener('input', () => el('secret-code').removeAttribute('aria-invalid'));
+el('adventure-form').addEventListener('submit', event => {
+  if (missionRunning) { event.preventDefault(); return; }
+  event.preventDefault();
+  const code = el('secret-code').value.replace(/\s+/g, '').toUpperCase();
+  if (code !== 'LIVIO70') {
+    el('secret-code').setAttribute('aria-invalid', 'true');
+    el('code-error').showModal();
+    return;
+  }
+  el('secret-code').removeAttribute('aria-invalid');
+  el('secret-code').value = '';
+  startMission();
+});
+let missionRunning = false;
+let missionTimers = [];
+let missionWasManual = false;
+function finishMission() {
+  if (!missionRunning) return;
+  missionRunning = false;
+  missionTimers.forEach(clearTimeout);
+  missionTimers = [];
+  el('mission-dialog').close();
+  el('start-adventure').disabled = false;
+  if (missionWasManual) go(1);
+  else {
+    adventureStarted = true;
+    try { localStorage.setItem(adventureStorageKey, 'yes'); } catch { /* Memoria locale facoltativa. */ }
+    current = scheduledStep(pageNow());
+    render();
+    window.scrollTo({top:0, behavior:'instant'});
+  }
+  const heading = current > 0 ? el('step-title') : document.querySelector('#landing h1');
+  heading.setAttribute('tabindex', '-1');
+  heading.focus({preventScroll:true});
+}
+function startMission() {
+  missionRunning = true;
+  missionWasManual = clockMode === 'manual';
+  el('start-adventure').disabled = true;
+  const dialog = el('mission-dialog');
+  dialog.dataset.stage = 'checking';
+  el('mission-continue').disabled = true;
+  el('mission-status').textContent = 'VERIFICA CODICE…';
+  dialog.showModal();
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  missionTimers.push(setTimeout(() => {
+    el('mission-status').textContent = 'Controllo con la centrale…';
+  }, reduced ? 150 : 3000));
+  missionTimers.push(setTimeout(() => {
+    dialog.dataset.stage = 'authorized';
+    el('mission-continue').disabled = false;
+    el('mission-status').textContent = 'CODICE CONFERMATO';
+  }, reduced ? 350 : 5000));
+}
+el('mission-continue').addEventListener('click', finishMission);
+el('mission-dialog').addEventListener('cancel', event => {
+  event.preventDefault();
+});
+// Interpreta il campo come ora di Roma, indipendentemente dal fuso del dispositivo.
+function parseItalianDateTime(value) {
+  const target = Date.parse(value.length === 16 ? value + ':00Z' : value + 'Z');
+  if (!Number.isFinite(target)) return NaN;
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone:'Europe/Rome', year:'numeric', month:'2-digit', day:'2-digit',
+    hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23'
+  });
+  let time = target;
+  for (let i = 0; i < 3; i++) {
+    const parts = Object.fromEntries(formatter.formatToParts(time).map(part => [part.type, part.value]));
+    const local = Date.UTC(+parts.year, +parts.month - 1, +parts.day, +parts.hour, +parts.minute, +parts.second);
+    time += target - local;
+  }
+  return time;
+}
+el('simulate').addEventListener('click', () => {
+  const input = el('test-time');
+  if (!input.reportValidity()) return;
+  const time = parseItalianDateTime(input.value);
+  if (!Number.isFinite(time)) return;
+  waitingShown = false;
+  simulatedTime = time;
+  simulationAnchor = performance.now();
+  simulationSpeed = Number(el('test-speed').value);
+  simulationPaused = false;
+  clockMode = 'simulation';
+  syncClock();
+});
+el('pause').addEventListener('click', () => {
+  if (clockMode !== 'simulation') return;
+  simulatedTime = pageNow();
+  simulationAnchor = performance.now();
+  simulationPaused = !simulationPaused;
+  syncClock();
+});
+el('test-speed').addEventListener('change', () => {
+  if (clockMode === 'simulation') {
+    simulatedTime = pageNow();
+    simulationAnchor = performance.now();
+  }
+  simulationSpeed = Number(el('test-speed').value);
+});
 setInterval(syncClock, 1000);
 document.addEventListener('visibilitychange', syncClock);
 window.addEventListener('focus', syncClock);
 current = scheduledStep();
 render();
+syncWaitingPopup();
 </script>
 </body>
 </html>
