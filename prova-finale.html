@@ -101,8 +101,8 @@
     .step-map h2 { font-size:25px; font-weight:normal; margin:0 0 12px; }
     .step-map p { font-size:17px; line-height:1.6; }
     .step-map #map-frame { display:block; width:100%; height:400px; border:0; border-radius:3px; background:#e5e9de; }
-    .step-map > a { display:block; margin-top:16px; padding:14px 16px; background:var(--ink); color:var(--paper); text-align:center; text-decoration:none; border-radius:3px; font:15px/1.5 Arial,sans-serif; }
-    .step-map > a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    .map-controls > a { display:flex; align-items:center; justify-content:center; min-height:48px; margin-left:auto; padding:12px 16px; background:var(--ink); color:var(--paper); text-align:center; text-decoration:none; border-radius:3px; font:15px/1.5 Arial,sans-serif; }
+    .map-controls > a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
     @media(max-width:600px) { .step-map { padding:14px; } .step-map #map-frame { height:350px; } }
     .step-map .map-note { font:13px/1.5 Arial,sans-serif; margin:12px 0; }
     #map-frame { z-index:0; }
@@ -178,7 +178,7 @@
     .mission-dialog[data-stage="checking"] .mission-status { top:calc(50% + 78px); }
     #step-title[tabindex="-1"]:focus, #landing h1[tabindex="-1"]:focus { outline:none; }
     #waiting-dialog p + p { margin-top:18px; }
-    .map-controls { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .map-controls { align-items:center; display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
     .map-controls button { min-width:48px; min-height:48px; padding:12px 16px; border:1px solid var(--ink); border-radius:3px; background:var(--paper); color:var(--ink); font:15px Arial,sans-serif; cursor:pointer; }
     .map-controls button:first-child, .map-controls button:nth-child(2) { font-size:23px; line-height:1; }
     .map-controls button:disabled { opacity:.4; cursor:default; }
@@ -407,9 +407,9 @@
           <button id="map-fullscreen" type="button" aria-label="Apri mappa a pieno schermo" title="Apri mappa a pieno schermo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" style="display:block"><path d="M9 9 4 4m0 5V4h5M15 9l5-5m-5 0h5v5M9 15l-5 5m0-5v5h5m6-5 5 5m-5 0h5v-5"/></svg>
           </button>
+          <a id="map-link" target="_blank" rel="noopener noreferrer">Apri in Maps</a>
         </div>
         </div></div>
-        <a id="map-link" target="_blank" rel="noopener noreferrer">Apri in Maps</a>
       </section>
 
     </article>
@@ -4152,7 +4152,8 @@ function showRouteMap(info) {
   const version = ++mapVersion;
   requestAnimationFrame(() => {
     if (version !== mapVersion || el('step-map').hidden) return;
-    el('map-controls').hidden = true;
+    el('map-controls').hidden = false;
+    ['map-zoom-in','map-zoom-out','map-fit','map-fullscreen'].forEach(id => { el(id).disabled = true; });
     if (routeMap) { routeMap.remove(); routeMap = null; }
     if (!window.L) {
       el('map-frame').textContent = 'Mappa non disponibile. Puoi aprire Google Maps con il pulsante sotto.';
@@ -4189,6 +4190,8 @@ function showRouteMap(info) {
 }
 function updateMapControls() {
   if (!routeMap) return;
+  el('map-fit').disabled = false;
+  el('map-fullscreen').disabled = false;
   el('map-zoom-in').disabled = routeMap.getZoom() >= routeMap.getMaxZoom();
   el('map-zoom-out').disabled = routeMap.getZoom() <= routeMap.getMinZoom();
 }
