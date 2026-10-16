@@ -302,7 +302,7 @@
       <p>Una giornata da rivivere, quando vuoi.</p>
       <div><button id="memory-card" type="button">Cartolina</button><button id="memory-day" type="button">Programma</button></div>
     </nav>
-    <div id="memory-close-bar" class="memory-nav" hidden><button id="memory-close" type="button">Chiudi ✕</button></div>
+    <div id="memory-close-bar" class="memory-nav" hidden><div><button id="memory-back" type="button" hidden>← Torna al programma</button><button id="memory-close" type="button">Chiudi ✕</button></div></div>
     <section id="intro" class="intro-card" aria-labelledby="intro-title" hidden>
       <header class="step-header">
         <div><div class="eyebrow">Una cartolina per te · INIZIAMO</div>
@@ -4293,6 +4293,7 @@ function render() {
   const unlocked = memory || adventureStarted;
   el('memory-nav').hidden = !memory || memorySelection !== null;
   el('memory-close-bar').hidden = !memory || memorySelection === null;
+  el('memory-back').hidden = !memory || !(memorySelection > 0);
   el('memory-card').setAttribute('aria-pressed', String(current === 0));
   el('memory-day').setAttribute('aria-pressed', String(current > 0));
   const map = unlocked && current > 0 ? steps[current - 1].mappa : null;
@@ -4369,6 +4370,7 @@ function showMemory(value) {
 }
 el('memory-card').addEventListener('click', () => showMemory(0));
 el('memory-day').addEventListener('click', () => showMemory(-1));
+el('memory-back').addEventListener('click', () => showMemory(-1));
 el('memory-close').addEventListener('click', () => showMemory(null));
 function updateTestControls() {
   el('mode').textContent = clockMode === 'manual' ? 'avanzamento manuale'
