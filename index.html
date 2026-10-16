@@ -300,8 +300,9 @@
   <main>
     <nav id="memory-nav" class="memory-nav" aria-label="Rivivi la giornata" hidden>
       <p>Una giornata da rivivere, quando vuoi.</p>
-      <div><button id="memory-card" type="button">La cartolina</button><button id="memory-day" type="button">La nostra giornata</button></div>
+      <div><button id="memory-card" type="button">Cartolina</button><button id="memory-day" type="button">Programma</button></div>
     </nav>
+    <div id="memory-close-bar" class="memory-nav" hidden><button id="memory-close" type="button">Chiudi ✕</button></div>
     <section id="intro" class="intro-card" aria-labelledby="intro-title" hidden>
       <header class="step-header">
         <div><div class="eyebrow">Una cartolina per te · INIZIAMO</div>
@@ -447,7 +448,7 @@
 
     </article>
     <section id="programme" class="programme" hidden aria-labelledby="programme-title">
-      <div class="eyebrow">La giornata prende forma</div>
+      <div class="eyebrow" id="programme-eyebrow">La giornata prende forma</div>
       <h2 id="programme-title">La giornata fin qui</h2>
       <ol id="programme-list"></ol>
     </section>
@@ -4134,8 +4135,8 @@ const steps = [
     "testo": "Che giornata fantastica, Livio! Tra sorprese, passeggiate e risate, abbiamo festeggiato i tuoi 70 anni nel modo più bello: insieme.\n\nSperiamo di averti regalato un ricordo speciale. Tu ne hai regalato uno a tutti noi: una di quelle giornate che continueremo a raccontare, con un sorriso, ancora per tanto tempo.\n\nBuon compleanno, Livio. Ti vogliamo bene! ❤️"
   }
 ];
-const memoryStartsAt = Date.parse('2026-10-19T00:00:00+02:00');
-let memorySelection = 0;
+const memoryStartsAt = Date.parse(steps[steps.length - 1].mostraDal);
+let memorySelection = null;
 let renderedMemory = false;
 function isMemoryMode() { return clockMode !== 'manual' && pageNow() >= memoryStartsAt; }
 const introStartsAt = Date.parse('2026-10-18T00:00:00+02:00');
@@ -4180,7 +4181,7 @@ function syncClock() {
   updateTestControls();
   if (clockMode === 'manual') return;
   if (isMemoryMode()) {
-    if (!renderedMemory) { memorySelection = 0; render(); }
+    if (!renderedMemory) { memorySelection = null; render(); }
     return;
   }
   if (renderedMemory) { current = scheduledStep(pageNow()); render(); return; }
@@ -4288,9 +4289,10 @@ function render() {
   closeMapFullscreen(false);
   const memory = isMemoryMode();
   renderedMemory = memory;
-  if (memory) current = memorySelection;
+  if (memory) current = memorySelection === null ? steps.length : Math.max(0, memorySelection);
   const unlocked = memory || adventureStarted;
-  el('memory-nav').hidden = !memory;
+  el('memory-nav').hidden = !memory || memorySelection !== null;
+  el('memory-close-bar').hidden = !memory || memorySelection === null;
   el('memory-card').setAttribute('aria-pressed', String(current === 0));
   el('memory-day').setAttribute('aria-pressed', String(current > 0));
   const map = unlocked && current > 0 ? steps[current - 1].mappa : null;
@@ -4322,9 +4324,10 @@ function render() {
   }
   updateTestControls();
   el('intro').hidden = !introIsVisible();
-  el('landing').hidden = introIsVisible() || current !== 0;
-  el('step').hidden = !unlocked || current === 0;
-  el('programme').hidden = memory ? current === 0 : !adventureStarted || current <= 1;
+  el('landing').hidden = memory ? memorySelection !== 0 : introIsVisible() || current !== 0;
+  el('step').hidden = memory ? memorySelection === 0 || memorySelection === -1 : !unlocked || current === 0;
+  el('programme').hidden = memory ? memorySelection !== -1 : !adventureStarted || current <= 1;
+  el('programme-eyebrow').textContent = memory ? 'La nostra giornata insieme' : 'La giornata prende forma';
   el('programme-title').textContent = memory || current === steps.length
     ? 'Un ricordo per sempre'
     : 'La giornata fin qui';
@@ -4365,7 +4368,8 @@ function showMemory(value) {
   window.scrollTo({top:0, behavior:'instant'});
 }
 el('memory-card').addEventListener('click', () => showMemory(0));
-el('memory-day').addEventListener('click', () => showMemory(steps.length));
+el('memory-day').addEventListener('click', () => showMemory(-1));
+el('memory-close').addEventListener('click', () => showMemory(null));
 function updateTestControls() {
   el('mode').textContent = clockMode === 'manual' ? 'avanzamento manuale'
     : clockMode === 'simulation' ? (simulationPaused ? 'simulazione in pausa' : 'orario simulato') : 'orario automatico';
@@ -4387,7 +4391,7 @@ function go(value) {
 function useRealClock() {
   try { adventureStarted = localStorage.getItem(adventureStorageKey) === 'yes'; } catch { adventureStarted = false; }
   clockMode = 'real';
-  memorySelection = 0;
+  memorySelection = null;
   simulationPaused = false;
   current = scheduledStep();
   render();
@@ -4508,7 +4512,7 @@ el('simulate').addEventListener('click', () => {
   const time = parseItalianDateTime(input.value);
   if (!Number.isFinite(time)) return;
   waitingShown = false;
-  memorySelection = 0;
+  memorySelection = null;
   renderedMemory = false;
   simulatedTime = time;
   simulationAnchor = performance.now();
