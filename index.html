@@ -4142,7 +4142,8 @@ function isMemoryMode() { return clockMode !== 'manual' && pageNow() >= memorySt
 const introStartsAt = Date.parse('2026-10-18T00:00:00+02:00');
 const waitingStartsAt = Date.parse('2026-10-17T00:00:00+02:00');
 let waitingShown = false;
-const adventureStorageKey = 'livio70-adventure-started-2026-10-18';
+// Nuova chiave: i vecchi sblocchi potevano provenire dalle simulazioni.
+const adventureStorageKey = 'livio70-adventure-started-2026-10-18-v2';
 function introIsVisible() {
   if (isMemoryMode()) return false;
   return clockMode === 'manual' ? manualScreen === 0 : !adventureStarted && pageNow() >= introStartsAt;
@@ -4460,7 +4461,9 @@ function finishMission() {
   if (missionWasManual) go(1);
   else {
     adventureStarted = true;
-    try { localStorage.setItem(adventureStorageKey, 'yes'); } catch { /* Memoria locale facoltativa. */ }
+    if (clockMode === 'real') {
+      try { localStorage.setItem(adventureStorageKey, 'yes'); } catch { /* Memoria locale facoltativa. */ }
+    }
     current = scheduledStep(pageNow());
     render();
     window.scrollTo({top:0, behavior:'instant'});
@@ -4521,6 +4524,7 @@ el('simulate').addEventListener('click', () => {
   simulationSpeed = Number(el('test-speed').value);
   simulationPaused = false;
   clockMode = 'simulation';
+  adventureStarted = false;
   syncClock();
 });
 el('pause').addEventListener('click', () => {
